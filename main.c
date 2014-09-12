@@ -1,5 +1,13 @@
 #include <stdio.h>
 
+// token
+typedef enum {TYPE_NUMBER, TYPE_IDENTIFIER, TYPE_KEYWORD, TYPE_SYMBOL} token_type_t;
+typedef struct token {
+  int type;
+  char* value;
+} token;
+
+
 // define states
 typedef enum {STATE_INITIAL, STATE_FOO, STATE_BAR, NUM_STATES} state_t;
 typedef char entry_char_t;
