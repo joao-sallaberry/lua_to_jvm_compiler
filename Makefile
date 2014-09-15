@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -O2
 
-main:
+main: token.o
 
 clean:
 	-rm -f *.o
