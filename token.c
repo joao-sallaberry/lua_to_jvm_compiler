@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 void init_token_list() {
     token_list = NULL;
@@ -15,7 +16,8 @@ token_t * get_token_list() {
 void add_token(token_type_t type, char* value) {
     token_t * t = malloc(sizeof(token_t));
     t->type = type;
-    t->value = value;
+    t->value = malloc(strlen(value) + 1);
+    strcpy(t->value, value);
     t->next = NULL;
 
     if (!token_list)
@@ -28,6 +30,7 @@ void add_token(token_type_t type, char* value) {
 void print_token_list() {
     token_t * t = token_list;
 
+    printf("-- TOKEN LIST ---\n");
     while (t) {
         printf("type=%d value=%s\n", t->type, t->value);
         t = t->next;   
