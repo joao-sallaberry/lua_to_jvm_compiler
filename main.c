@@ -3,20 +3,21 @@
 
 
 // define states
-typedef enum {STATE_INITIAL, STATE_FOO, STATE_SYMBOL, STATE_BAR, STATE_FINAL, NUM_STATES} state_t;
+typedef enum {STATE_INITIAL, STATE_NUMBER, STATE_MAKE_NUMBER, STATE_SYMBOL, STATE_BAR, STATE_FINAL, NUM_STATES} state_t;
 typedef char entry_char_t;
 typedef state_t state_action_t();
 
 // declare state actions
 state_t do_state_initial();
-state_t do_state_foo();
+state_t do_state_number();
+state_t do_state_make_number();
 state_t do_state_symbol();
 state_t do_state_bar();
 state_t do_state_final();
 
 // lookup table of state actions
 state_action_t* const state_table[NUM_STATES] = {
-    do_state_initial, do_state_foo, do_state_symbol, do_state_bar, do_state_final
+    do_state_initial, do_state_number, do_state_make_number, do_state_symbol, do_state_bar, do_state_final
 };
 
 // execute action and find next state
@@ -27,6 +28,7 @@ state_t run_state(state_t current_state) {
 
 char buffer[256];
 size_t buffer_pt = 0;
+int buffer_int = 0;
 entry_char_t current_char = 0;
 entry_char_t next_char = 0;
 
@@ -55,11 +57,12 @@ int main() {
 //** define state actions **//
 
 // initial state
-state_t do_state_initial() { //TODO why pointer?
-    //printf("!%c!", entry_char);
+state_t do_state_initial() {
     if (current_char >= '0' && current_char <= '9') {
-        buffer[buffer_pt++] = current_char;
-        return STATE_FOO;
+        buffer_int = current_char - '0';
+	if (next_char == ' ' || next_char == '\n')
+	    return STATE_MAKE_NUMBER;
+        return STATE_NUMBER;
     }
     else if (current_char == ';') {
 	buffer[buffer_pt++] = current_char;
@@ -72,21 +75,23 @@ state_t do_state_initial() { //TODO why pointer?
 }
 
 // state receiving a number
-state_t do_state_foo() {
+state_t do_state_number() {
     if (current_char >= '0' && current_char <= '9') {
-        buffer[buffer_pt++] = current_char;
-        return STATE_FOO;
-    }
-    else if (current_char == ' ' || current_char == '\n') {
-        buffer[buffer_pt++] = 0;
-        add_token(TYPE_NUMBER, buffer);
-        buffer_pt = 0;
-        return STATE_INITIAL;
+        buffer_int *= 10;
+	buffer_int += current_char - '0';
+	if (next_char == ' ' || next_char == '\n')
+	    return STATE_IDLE;
+        return STATE_NUMBER;
     }
     else if (current_char == EOF) {
         return STATE_FINAL;
     }
-    return STATE_FOO;
+    return STATE_NUMBER;
+}
+
+// wait next char
+state_t do_state_idle() {
+    return STATE_INITIAL;
 }
 
 // create symbol tokens
