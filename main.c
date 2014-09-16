@@ -3,30 +3,31 @@
 
 
 // define states
-typedef enum {STATE_INITIAL, STATE_FOO, STATE_BAR, STATE_FINAL, NUM_STATES} state_t;
+typedef enum {STATE_INITIAL, STATE_FOO, STATE_SYMBOL, STATE_BAR, STATE_FINAL, NUM_STATES} state_t;
 typedef char entry_char_t;
-typedef state_t state_action_t(entry_char_t *entry_char);
+typedef state_t state_action_t(entry_char_t entry_char);
 
 // declare state actions
-state_t do_state_initial(entry_char_t *entry_char);
-state_t do_state_foo(entry_char_t *entry_char);
-state_t do_state_bar(entry_char_t *entry_char);
-state_t do_state_final(entry_char_t *entry_char);
+state_t do_state_initial(entry_char_t entry_char);
+state_t do_state_foo(entry_char_t entry_char);
+state_t do_state_symbol(entry_char_t entry_char);
+state_t do_state_bar(entry_char_t entry_char);
+state_t do_state_final(entry_char_t entry_char);
 
 // lookup table of state actions
 state_action_t* const state_table[NUM_STATES] = {
-    do_state_initial, do_state_foo, do_state_bar, do_state_final
+    do_state_initial, do_state_foo, do_state_symbol, do_state_bar, do_state_final
 };
 
 // execute action and find next state
-state_t run_state(state_t current_state, entry_char_t *entry_char) {
-    return state_table[current_state]( entry_char );
+state_t run_state(state_t current_state, entry_char_t entry_char) {
+    return state_table[current_state](entry_char);
 };
 
 
 char buffer[256];
 size_t buffer_pt = 0;
-entry_char_t entry_char;
+//entry_char_t entry_char;
 
 int main() {
     state_t current_state = STATE_INITIAL;
@@ -39,7 +40,7 @@ int main() {
 
     while (1) {
         entry_char = getc(f);
-        current_state = run_state(current_state, &entry_char);
+        current_state = run_state(current_state, entry_char);
         if (current_state == STATE_FINAL) //TODO why not same line?
             break;
         //printf("-%d-", current_state);
@@ -50,40 +51,63 @@ int main() {
     return 0;
 }
 
-// define state actions
-state_t do_state_initial(entry_char_t *entry_char) { //TODO why pointer?
-    //printf("!%c!", *entry_char);
-    if (*entry_char >= '0' && *entry_char <= '9') {
-        buffer[buffer_pt++] = *entry_char;
+//** define state actions **//
+
+// initial state
+state_t do_state_initial(entry_char_t entry_char) { //TODO why pointer?
+    //printf("!%c!", entry_char);
+    if (entry_char >= '0' && entry_char <= '9') {
+        buffer[buffer_pt++] = entry_char;
         return STATE_FOO;
     }
-    else if (*entry_char == EOF) {
+    else if (entry_char == ';') {
+	buffer[buffer_pt++] = entry_char;
+	return STATE_SYMBOL;
+    }
+    else if (entry_char == EOF) {
         return STATE_FINAL;
     }
     return STATE_INITIAL;
 }
 
-state_t do_state_foo(entry_char_t *entry_char) {
-    if (*entry_char >= '0' && *entry_char <= '9') {
-        buffer[buffer_pt++] = *entry_char;
+// state receiving a number
+state_t do_state_foo(entry_char_t entry_char) {
+    if (entry_char >= '0' && entry_char <= '9') {
+        buffer[buffer_pt++] = entry_char;
         return STATE_FOO;
     }
-    else if (*entry_char == ' ' || *entry_char == '\n') {
+    else if (entry_char == ' ' || entry_char == '\n') {
         buffer[buffer_pt++] = 0;
         add_token(TYPE_NUMBER, buffer);
         buffer_pt = 0;
         return STATE_INITIAL;
     }
-    else if (*entry_char == EOF) {
+    else if (entry_char == EOF) {
         return STATE_FINAL;
     }
     return STATE_FOO;
 }
 
-state_t do_state_bar(entry_char_t *entry_char) {
+// create symbol tokens
+state_t do_state_symbol(entry_char_t entry_char) {
+    if (entry_char == ' ' || entry_char == '\n') {
+        buffer[buffer_pt++] = 0;
+        add_token(TYPE_SYMBOL, buffer);
+        buffer_pt = 0;
+        return STATE_INITIAL;
+    }
+    return STATE_SYMBOL;
+}
+
+state_t do_state_bar(entry_char_t entry_char) {
     return STATE_BAR;
 }
 
-state_t do_state_final(entry_char_t *entry_char) {
+state_t do_state_final(entry_char_t entry_char) {
     return STATE_FINAL;
 }
+
+
+//TODO ask
+// como salvar token?
+// como salvar value?
