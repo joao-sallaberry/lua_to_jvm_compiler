@@ -77,8 +77,13 @@ state_t do_state_foo(entry_char_t *entry_char) {
     else if (*entry_char == EOF) {
         return STATE_FINAL;
     }
+    return STATE_FOO;
 }
 
-state_t do_state_bar(entry_char_t *entry_char) {}
+state_t do_state_bar(entry_char_t *entry_char) {
+    return STATE_BAR;
+}
 
-state_t do_state_final(entry_char_t *entry_char) {}
+state_t do_state_final(entry_char_t *entry_char) {
+    return STATE_FINAL;
+}

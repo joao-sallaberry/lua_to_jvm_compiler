@@ -30,7 +30,7 @@ void add_token(token_type_t type, char* value) {
 void print_token_list() {
     token_t * t = token_list;
 
-    printf("-- TOKEN LIST ---\n");
+    printf("--- TOKEN LIST ---\n");
     while (t) {
         printf("type=%d value=%s\n", t->type, t->value);
         t = t->next;   
