@@ -5,8 +5,6 @@
 // define states
 typedef enum {ST_INITIAL, ST_NUMBER, ST_ALPHANUM, ST_SYMBOL, NUM_STATES} state_t;
 typedef enum {EN_DIGIT, EN_ALPHA, EN_SYMBOL, EN_SPACE, NUM_ENTRIES} entry_type_t;
-typedef char entry_char_t;
-//typedef state_t state_action_t();
 
 state_t const next_state[][NUM_ENTRIES] = {
 // receive        digit         alpha         symbol        space 
@@ -22,17 +20,20 @@ void do_nothing();
 void do_initial_digit();
 void do_initial_alpha();
 void do_initial_symbol();
-void do_number_number();
-void do_alphanum_number();
+void do_number_digit();
+void do_number_space();
+void do_alphanum_digit();
 void do_alphanum_alpha();
+void do_alphanum_space();
 void do_symbol_symbol();
+void do_symbol_space();
 
 void (*const action_table [NUM_STATES][NUM_ENTRIES]) (void) = {
 //                digit                alpha                symbol                 space
 /* INITIAL */    {do_initial_digit,    do_initial_alpha,    do_initial_symbol,     do_nothing},
-/* NUMBER */     {do_number_number,    do_nothing,          do_nothing,            do_nothing},
-/* ALPHANUM */   {do_alphanum_number,  do_alphanum_alpha,   do_nothing,            do_nothing},
-/* SYMBOL */     {do_nothing,          do_nothing,          do_symbol_symbol,      do_nothing}
+/* NUMBER */     {do_number_digit,     do_nothing,          do_nothing,            do_number_space},
+/* ALPHANUM */   {do_alphanum_digit,   do_alphanum_alpha,   do_nothing,            do_alphanum_space},
+/* SYMBOL */     {do_nothing,          do_nothing,          do_symbol_symbol,      do_symbol_space}
 };
 
 
@@ -64,9 +65,12 @@ entry_type_t classify_entry(char c) {
 
 char buffer[256];
 size_t buffer_pt = 0;
-int buffer_int = 0;
-entry_char_t current_char = 0;
-entry_char_t next_char = 0;
+int buffer_int;
+char buffer_sym;
+token_type_t token_type;
+
+char current_char = ' ';
+char next_char = ' ';
 
 int main() {
     state_t current_state = ST_INITIAL;
@@ -78,13 +82,13 @@ int main() {
 
     while (1) {
 	current_char = next_char;
+	if(current_char == EOF)
+	    break;
         next_char = getc(f);
 	entry_type_t cur_char_type = classify_entry(current_char);
 
 	action_table[current_state][cur_char_type]();
 	current_state = next_state[current_state][cur_char_type];
-        //if (current_state == STATE_FINAL) //TODO why not same line?
-        //    break;
         //printf("-%d-", current_state);
     }
 
@@ -95,66 +99,51 @@ int main() {
 
 //** define state actions **//
 
-/*
-// initial state
-state_t do_state_initial() {
-    if (current_char >= '0' && current_char <= '9') {
-        buffer_int = current_char - '0';
-	if (next_char == ' ' || next_char == '\n') {
-	    add_int_token(buffer_int);
-	    return STATE_INITIAL;
-	}
-        return STATE_NUMBER;
-    }
-    else if (current_char >= 'a' && current_char <= 'z') {
-	buffer[buffer_pt++] = current_char;
-    }
-    else if (current_char == ';') {
-	buffer[buffer_pt++] = current_char;
-	return STATE_SYMBOL;
-    }
-    else if (current_char == EOF) {
-        return STATE_FINAL;
-    }
-    return STATE_INITIAL;
+void do_nothing() {
 }
 
-// state receiving a number
-state_t do_state_number() {
-    if (current_char >= '0' && current_char <= '9') {
-        buffer_int *= 10;
-	buffer_int += current_char - '0';
-	if (next_char == ' ' || next_char == '\n')
-	    return STATE_INITIAL;
-        return STATE_NUMBER;
-    }
-    else if (current_char == EOF) {
-        return STATE_FINAL;
-    }
-    return STATE_NUMBER;
+void do_initial_digit() {
+    buffer_int = 0;
+    do_number_digit();
 }
 
-// wait next char
-state_t do_state_identifier() {
-    
-    return STATE_IDENTIFIER;
+void do_initial_alpha() {
+    buffer_pt = 0;
+    do_alphanum_alpha();
 }
 
-// create symbol tokens
-state_t do_state_symbol() {
-    if (current_char == ' ' || current_char == '\n') {
-        buffer[buffer_pt++] = 0;
-        //add_token(TYPE_SYMBOL, buffer);
-        buffer_pt = 0;
-        return STATE_INITIAL;
-    }
-    return STATE_SYMBOL;
+void do_initial_symbol() {
+    buffer_sym = current_char;
 }
 
-state_t do_state_final() {
-    return STATE_FINAL;
+void do_number_digit() {
+    buffer_int *= 10;
+    buffer_int += current_char - '0';
 }
-*/
+
+void do_number_space() {
+    add_int_token(buffer_int);
+}
+
+void do_alphanum_digit() {
+    do_alphanum_alpha();
+}
+
+void do_alphanum_alpha() {
+    buffer[buffer_pt++] = current_char;
+}
+
+void do_alphanum_space() {
+    buffer[buffer_pt] = 0;
+    add_identifier_token(buffer);
+}
+
+void do_symbol_symbol() { //TODO
+}
+
+void do_symbol_space() {
+    add_symbol_token(buffer_sym);
+}
 
 //TODO ask
 // como salvar value?

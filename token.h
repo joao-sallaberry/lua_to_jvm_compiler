@@ -21,4 +21,5 @@ token_t *get_token_list();
 token_t *create_token(token_type_t );
 void add_int_token(int );
 void add_identifier_token(char* );
+void add_symbol_token(char );
 void print_token_list();

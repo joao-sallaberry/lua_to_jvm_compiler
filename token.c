@@ -42,6 +42,24 @@ void add_identifier_token(char* value) {
     strcpy(t->str_value, value);
 }
 
+void add_symbol_token(char sym) {
+    token_t *t = create_token(TYPE_SYMBOL);
+    switch (sym) {
+    case ';':
+	t->sym_value = SYM_SEMICOLON;
+	break;
+    case '=':
+	t->sym_value = SYM_ASSIGN;
+	break;
+    case '>':
+	t->sym_value = SYM_GT;
+	break;
+    case '<':
+	t->sym_value = SYM_LT;
+	break;
+    }
+}
+
 void print_token_list() {
     token_t * t = token_list;
 
@@ -52,6 +70,8 @@ void print_token_list() {
 	    printf("%d", t->int_value);
 	else if (t->type == TYPE_IDENTIFIER)
 	    printf("%s", t->str_value);
+	else if (t->type == TYPE_SYMBOL)
+	    printf("%d", t->sym_value);
 	printf("\n");
 
         t = t->next;   
