@@ -3,21 +3,20 @@
 
 
 // define states
-typedef enum {STATE_INITIAL, STATE_NUMBER, STATE_MAKE_NUMBER, STATE_SYMBOL, STATE_BAR, STATE_FINAL, NUM_STATES} state_t;
+typedef enum {STATE_INITIAL, STATE_NUMBER, STATE_IDENTIFIER, STATE_SYMBOL, STATE_FINAL, NUM_STATES} state_t;
 typedef char entry_char_t;
 typedef state_t state_action_t();
 
 // declare state actions
 state_t do_state_initial();
 state_t do_state_number();
-state_t do_state_make_number();
+state_t do_state_identifier();
 state_t do_state_symbol();
-state_t do_state_bar();
 state_t do_state_final();
 
 // lookup table of state actions
 state_action_t* const state_table[NUM_STATES] = {
-    do_state_initial, do_state_number, do_state_make_number, do_state_symbol, do_state_bar, do_state_final
+    do_state_initial, do_state_number, do_state_identifier, do_state_symbol, do_state_final
 };
 
 // execute action and find next state
@@ -56,13 +55,20 @@ int main() {
 
 //** define state actions **//
 
+char symbol_list[] = ";=<>";
+
 // initial state
 state_t do_state_initial() {
     if (current_char >= '0' && current_char <= '9') {
         buffer_int = current_char - '0';
-	if (next_char == ' ' || next_char == '\n')
-	    return STATE_MAKE_NUMBER;
+	if (next_char == ' ' || next_char == '\n') {
+	    add_int_token(buffer_int);
+	    return STATE_INITIAL;
+	}
         return STATE_NUMBER;
+    }
+    else if (current_char >= 'a' && current_char <= 'z') {
+	buffer[buffer_pt++] = current_char;
     }
     else if (current_char == ';') {
 	buffer[buffer_pt++] = current_char;
@@ -80,7 +86,7 @@ state_t do_state_number() {
         buffer_int *= 10;
 	buffer_int += current_char - '0';
 	if (next_char == ' ' || next_char == '\n')
-	    return STATE_IDLE;
+	    return STATE_INITIAL;
         return STATE_NUMBER;
     }
     else if (current_char == EOF) {
@@ -90,23 +96,20 @@ state_t do_state_number() {
 }
 
 // wait next char
-state_t do_state_idle() {
-    return STATE_INITIAL;
+state_t do_state_identifier() {
+    
+    return STATE_IDENTIFIER;
 }
 
 // create symbol tokens
 state_t do_state_symbol() {
     if (current_char == ' ' || current_char == '\n') {
         buffer[buffer_pt++] = 0;
-        add_token(TYPE_SYMBOL, buffer);
+        //add_token(TYPE_SYMBOL, buffer);
         buffer_pt = 0;
         return STATE_INITIAL;
     }
     return STATE_SYMBOL;
-}
-
-state_t do_state_bar() {
-    return STATE_BAR;
 }
 
 state_t do_state_final() {

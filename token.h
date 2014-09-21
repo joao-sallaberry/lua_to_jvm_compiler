@@ -2,9 +2,14 @@
 
 typedef enum {TYPE_NUMBER, TYPE_IDENTIFIER, TYPE_KEYWORD, TYPE_SYMBOL} token_type_t;
 
+typedef enum {SYM_SEMICOLON, SYM_ASSIGN, SYM_EQUAL_TO, SYM_GT, SYM_LT} symbol_t;
+
 typedef struct token {
     token_type_t type;
-    char* value;
+    char* str_value;
+    int int_value;
+    float flo_value;
+    symbol_t sym_value;
     struct token *next;
 } token_t;
 
@@ -12,6 +17,8 @@ token_t *token_list;
 token_t *last_token;
 
 void init_token_list();
-token_t * get_token_list();
-void add_token(token_type_t , char* );
+token_t *get_token_list();
+token_t *create_token(token_type_t );
+void add_int_token(int );
+void add_identifier_token(char* );
 void print_token_list();
