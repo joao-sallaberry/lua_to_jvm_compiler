@@ -36,6 +36,11 @@ void add_int_token(int i) {
     t->int_value = i;
 }
 
+void add_float_token(float f) {
+    token_t *t = create_token(TYPE_FLOAT);
+    t->flo_value = f;
+}
+
 void add_identifier_token(char* value) {
     token_t *t = create_token(TYPE_IDENTIFIER);
     t->str_value = malloc(strlen(value) + 1);
@@ -68,6 +73,8 @@ void print_token_list() {
 	printf("type=%d value=", t->type);
 	if (t->type == TYPE_NUMBER)
 	    printf("%d", t->int_value);
+	else if (t->type == TYPE_FLOAT)
+	    printf("%f", t->flo_value);
 	else if (t->type == TYPE_IDENTIFIER)
 	    printf("%s", t->str_value);
 	else if (t->type == TYPE_SYMBOL)
