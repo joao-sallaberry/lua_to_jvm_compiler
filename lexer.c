@@ -45,6 +45,12 @@ void (*const action_table [NUM_STATES][NUM_ENTRIES]) (void) = {
 };
 
 
+// keywords
+const char * const keywords[] = {
+    "if", "else", "while", "then",
+    "int", "float", "bool"
+};
+size_t size_keywords = (sizeof(keywords) / sizeof(char *));
 
 // auxiliar functions
 inline int is_digit(char c) {
@@ -163,8 +169,14 @@ void do_alphanum_alpha() {
     buffer[buffer_pt++] = current_char;
 }
 
-void do_alphanum_space() {
+void do_alphanum_space() {// TODO create state for receiving digits
     buffer[buffer_pt] = 0;
+    for (int i = 0; i < size_keywords; i++) {
+	if (!strcmp(buffer, keywords[i])) {
+	    add_keyword_token(buffer);
+	    return;
+	}
+    }
     add_identifier_token(buffer);
 }
 
