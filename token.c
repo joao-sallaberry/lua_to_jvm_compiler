@@ -4,6 +4,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+token_t *token_list;
+token_t *last_token;
+
 void init_token_list() {
     token_list = NULL;
     last_token = NULL;

@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -O2 -Wall
 
-main: token.o
+main: token.o lexer.o
 
 clean:
 	-rm -f *.o
