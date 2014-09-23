@@ -53,7 +53,7 @@ inline int is_digit(char c) {
 inline int is_alpha(char c) {
     return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
 }
-inline int is_symbol(char c) {
+inline char * is_symbol(char c) {
     return strchr("<>=", c);
 }
 
@@ -84,11 +84,11 @@ token_type_t token_type;
 char current_char = ' ';
 char next_char = ' ';
 
-void run_lexer() {
+void run_lexer(char* file_name) {
     state_t current_state = ST_INITIAL;
 
     FILE *f;
-    f = fopen("example.txt", "r"); // TODO treat return
+    f = fopen(file_name, "r"); // TODO treat return
 
     init_token_list();
 
