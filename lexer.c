@@ -6,16 +6,17 @@
 
 
 // define states
-typedef enum {ST_INITIAL, ST_NUMBER, ST_FLOAT, ST_ALPHANUM, ST_SYMBOL, NUM_STATES} state_t;
-typedef enum {EN_DIGIT, EN_ALPHA, EN_DOT, EN_SYMBOL, EN_SPACE, NUM_ENTRIES} entry_type_t;
+typedef enum {ST_INITIAL, ST_COMMENT, ST_NUMBER, ST_FLOAT, ST_ALPHANUM, ST_SYMBOL, NUM_STATES} state_t;
+typedef enum {EN_DIGIT, EN_ALPHA, EN_DOT, EN_SYMBOL, EN_HASHTAG, EN_NEWLINE, EN_SPACE, NUM_ENTRIES} entry_type_t;
 
 state_t const next_state[][NUM_ENTRIES] = {
-// receive        digit         alpha         dot           symbol        space 
-/* INITIAL */    {ST_NUMBER,   ST_ALPHANUM,   ST_FLOAT,     ST_SYMBOL,    ST_INITIAL},
-/* NUMBER */     {ST_NUMBER,   0,             ST_FLOAT,     0,            ST_INITIAL},
-/* FLOAT */      {ST_FLOAT,    0,             0,            0,            ST_INITIAL},
-/* ALPHANUM */   {ST_ALPHANUM, ST_ALPHANUM,   0,            0,            ST_INITIAL},
-/* SYMBOL */     {0,           0,             0,            ST_SYMBOL,    ST_INITIAL}
+// receive        digit         alpha         dot           symbol       hashtag      newline      space 
+/* INITIAL */    {ST_NUMBER,   ST_ALPHANUM,   ST_FLOAT,     ST_SYMBOL,   ST_COMMENT,  ST_INITIAL,  ST_INITIAL},
+/* COMMENT */    {ST_COMMENT,  ST_COMMENT,    ST_COMMENT,   ST_COMMENT,  ST_COMMENT,  ST_INITIAL,  ST_COMMENT},
+/* NUMBER */     {ST_NUMBER,   0,             ST_FLOAT,     0,           0,           ST_INITIAL,  ST_INITIAL},
+/* FLOAT */      {ST_FLOAT,    0,             0,            0,           0,           ST_INITIAL,  ST_INITIAL},
+/* ALPHANUM */   {ST_ALPHANUM, ST_ALPHANUM,   0,            0,           0,           ST_INITIAL,  ST_INITIAL},
+/* SYMBOL */     {0,           0,             0,            ST_SYMBOL,   0,           ST_INITIAL,  ST_INITIAL}
 };
 
 // declare state actions
@@ -36,12 +37,13 @@ void do_symbol_symbol();
 void do_symbol_space();
 
 void (*const action_table [NUM_STATES][NUM_ENTRIES]) (void) = {
-//                digit                alpha                dot             symbol                 space
-/* INITIAL */    {do_initial_digit,    do_initial_alpha,    do_initial_dot,     do_initial_symbol,     do_nothing},
-/* NUMBER */     {do_number_digit,     do_nothing,          do_number_dot,  do_nothing,            do_number_space},
-/* FLOAT */      {do_float_digit,      do_nothing,          do_nothing,     do_nothing,            do_float_space},
-/* ALPHANUM */   {do_alphanum_digit,   do_alphanum_alpha,   do_nothing,     do_nothing,            do_alphanum_space},
-/* SYMBOL */     {do_nothing,          do_nothing,          do_nothing,     do_symbol_symbol,      do_symbol_space}
+//                digit               alpha               dot              symbol              hashtag              newline            space
+/* INITIAL */    {do_initial_digit,   do_initial_alpha,   do_initial_dot,  do_initial_symbol,  do_nothing,          do_nothing,        do_nothing},
+/* COMMENT */    {do_nothing,         do_nothing,         do_nothing,      do_nothing,         do_nothing,          do_nothing,        do_nothing},
+/* NUMBER */     {do_number_digit,    do_nothing,         do_number_dot,   do_nothing,         do_nothing,          do_number_space,   do_number_space},
+/* FLOAT */      {do_float_digit,     do_nothing,         do_nothing,      do_nothing,         do_nothing,          do_float_space,    do_float_space},
+/* ALPHANUM */   {do_alphanum_digit,  do_alphanum_alpha,  do_nothing,      do_nothing,         do_nothing,          do_alphanum_space, do_alphanum_space},
+/* SYMBOL */     {do_nothing,         do_nothing,         do_nothing,      do_symbol_symbol,   do_nothing,          do_symbol_space,   do_symbol_space}
 };
 
 
@@ -60,11 +62,11 @@ inline int is_alpha(char c) {
     return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
 }
 inline char * is_symbol(char c) {
-    return strchr("<>=", c);
+    return strchr("<>=()", c);
 }
 
 entry_type_t classify_entry(char c) {
-    if (c == ' ' || c == '\n')
+    if (c == ' ' || c == '\t')
 	return EN_SPACE;
     else if (is_digit(c))
 	return EN_DIGIT;
@@ -74,6 +76,10 @@ entry_type_t classify_entry(char c) {
 	return EN_SYMBOL;
     else if (c == '.')
 	return EN_DOT;
+    else if (c == '#')
+	return EN_HASHTAG;
+    else if (c == '\n')
+	return EN_NEWLINE;
     else
 	fprintf(stderr, "entry char is of unknown type\n");
     return 1;
