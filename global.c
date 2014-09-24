@@ -46,8 +46,8 @@ int search_insert_sym(char* value) {
 	last_symbol->next = malloc(sizeof(symbol_t));
 	last_symbol = last_symbol->next;
     }
-    last_symbol->value = value;
-    //strcpy(last_symbol->value, value);
+    last_symbol->value = malloc(strlen(value) + 1);
+    strcpy(last_symbol->value, value);
     last_symbol->next = NULL;
     
     return pos;

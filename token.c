@@ -86,6 +86,7 @@ void print_token_list() {
 
         t = t->next;   
     }
+    printf("\n");
 }
 
 
