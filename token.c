@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "global.h"
 
 token_t *token_list;
 token_t *last_token;
@@ -19,10 +20,8 @@ token_t *get_token_list() {
 token_t *create_token(token_type_t type) {
     token_t *t = malloc(sizeof(token_t));
     t->type = type;
-    t->str_value = 0;
     t->int_value = 0;
     t->flo_value = 0;
-    t->sym_value = 0;
     t->next = NULL;
     
     if (!token_list)
@@ -46,32 +45,25 @@ void add_float_token(float f) {
 
 void add_keyword_token(char* value) {
     token_t *t = create_token(TYPE_KEYWORD);
-    t->str_value = malloc(strlen(value) + 1);
-    strcpy(t->str_value, value);
+    for (int i = 0; i < size_keywords; i++)
+	if (!strcmp(value, keywords[i])) {
+	    t->int_value = i;
+	    return;
+	}
 }
 
 void add_identifier_token(char* value) {
     token_t *t = create_token(TYPE_IDENTIFIER);
-    t->str_value = malloc(strlen(value) + 1);
-    strcpy(t->str_value, value);
+    t->int_value = search_insert_sym(value);
 }
 
-void add_symbol_token(char sym) {
+void add_specialc_token(char* sym) {
     token_t *t = create_token(TYPE_SYMBOL);
-    switch (sym) {
-    case ';':
-	t->sym_value = SYM_SEMICOLON;
-	break;
-    case '=':
-	t->sym_value = SYM_ASSIGN;
-	break;
-    case '>':
-	t->sym_value = SYM_GT;
-	break;
-    case '<':
-	t->sym_value = SYM_LT;
-	break;
-    }
+    for (int i = 0; ; i++)
+	if (!strcmp(sym, specialc_table[i])) {
+	    t->int_value = i;
+	    return;
+	}
 }
 
 void print_token_list() {
@@ -85,11 +77,11 @@ void print_token_list() {
 	else if (t->type == TYPE_FLOAT)
 	    printf("%f", t->flo_value);
 	else if (t->type == TYPE_KEYWORD)
-	    printf("%s", t->str_value);
+	    printf("%d", t->int_value);
 	else if (t->type == TYPE_IDENTIFIER)
-	    printf("%s", t->str_value);
+	    printf("%d", t->int_value);
 	else if (t->type == TYPE_SYMBOL)
-	    printf("%d", t->sym_value);
+	    printf("%d", t->int_value);
 	printf("\n");
 
         t = t->next;   

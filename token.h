@@ -5,14 +5,12 @@
 
 typedef enum {TYPE_NUMBER, TYPE_FLOAT, TYPE_KEYWORD, TYPE_IDENTIFIER, TYPE_SYMBOL} token_type_t;
 
-typedef enum {SYM_SEMICOLON, SYM_ASSIGN, SYM_EQUAL_TO, SYM_GT, SYM_LT} symbol_t;
+typedef enum {SYM_SEMICOLON, SYM_ASSIGN, SYM_EQUAL_TO, SYM_GT, SYM_LT} specialc_t; // TODO nedded?
 
 typedef struct token {
     token_type_t type;
-    char* str_value;
     int int_value;
     float flo_value;
-    symbol_t sym_value;
     struct token *next;
 } token_t;
 
@@ -22,8 +20,8 @@ token_t *create_token(token_type_t );
 void add_int_token(int );
 void add_float_token(float );
 void add_keyword_token(char * );
-void add_identifier_token(char* );
-void add_symbol_token(char );
+void add_identifier_token(char * );
+void add_specialc_token(char *);
 void print_token_list();
 
 #endif

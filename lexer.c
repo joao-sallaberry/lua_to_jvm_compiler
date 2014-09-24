@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "token.h"
+#include "global.h"
 
 #include "lexer.h"
 
@@ -46,13 +47,6 @@ void (*const action_table [NUM_STATES][NUM_ENTRIES]) (void) = {
 /* SYMBOL */     {do_nothing,         do_nothing,         do_nothing,      do_symbol_symbol,   do_nothing,          do_symbol_space,   do_symbol_space}
 };
 
-
-// keywords
-const char * const keywords[] = {
-    "if", "else", "while", "then",
-    "int", "float", "bool"
-};
-size_t size_keywords = (sizeof(keywords) / sizeof(char *));
 
 // auxiliar functions
 inline int is_digit(char c) {
@@ -141,7 +135,8 @@ void do_initial_dot() {
 }
 
 void do_initial_symbol() {
-    buffer_sym = current_char;
+    buffer[0] = current_char;
+    buffer[1] = 0;
 }
 
 void do_number_digit() {
@@ -190,7 +185,7 @@ void do_symbol_symbol() { //TODO
 }
 
 void do_symbol_space() {
-    add_symbol_token(buffer_sym);
+    add_specialc_token(buffer);
 }
 
 //TODO ask
