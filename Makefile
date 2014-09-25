@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -g -O2 -Wall -std=c99
+CFLAGS = -g -O1 -Wall -std=c99
 
 main: token.o lexer.o global.o
 

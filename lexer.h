@@ -1,6 +1,6 @@
 #ifndef LEXER_H
 #define LEXER_H
 
-void run_lexer();
+int get_next_token(FILE * );
 
 #endif

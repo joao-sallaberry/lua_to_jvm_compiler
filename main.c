@@ -1,9 +1,18 @@
+#include <stdio.h>
 #include "lexer.h"
 #include "token.h"
 #include "global.h"
 
 int main() {
-    run_lexer("ENTRADA.txt");
+    FILE *f;
+    f = fopen("ENTRADA.txt", "r"); // TODO treat return
+
+    token_t *t;
+
+    while (!get_next_token(f)) {
+    	
+    	//printf("%d\n", t->type);
+    }    
 
     print_token_list();
     print_symbol_table();
