@@ -8,7 +8,6 @@ typedef enum {TYPE_NUMBER, TYPE_FLOAT, TYPE_KEYWORD, TYPE_IDENTIFIER, TYPE_SYMBO
 typedef struct token {
     token_type_t type;
     int int_value;
-    float flo_value;
     unsigned int line;
     unsigned int column;
     struct token *next;

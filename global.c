@@ -2,6 +2,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "global.h"
+
+#include "token.h"
+
 /* special chars */
 const char * const specialc_table[] = {"=", "<", ">", ";"};
 
@@ -12,6 +16,13 @@ const char * const keywords[] = {
     "int", "float", "bool"
 };
 size_t size_keywords = (sizeof(keywords) / sizeof(char *));
+
+void print_keyword_table() {
+    printf("--- KEYWORD TABLE (class %d) ---\n", TYPE_KEYWORD);
+    for (int i = 0; i < size_keywords; i++)
+	printf("%4d %s\n", i, keywords[i]);
+    printf("\n");
+}
 
 
 /* symbols */
@@ -55,11 +66,61 @@ int search_insert_sym(char* value) {
 void print_symbol_table() {
     symbol_t *s = first_symbol;
     int pos = 0;
-    printf("--- SYMBOL TABLE ---\n");
+    printf("--- SYMBOL TABLE (class %d) ---\n", TYPE_IDENTIFIER);
     while(s) {
-	printf("%2d  %s\n", pos, s->value);
+	printf("%4d  %s\n", pos, s->value);
 	pos++;
 	s = s->next;
+    }
+    printf("\n");
+}
+
+
+/* floats */
+typedef struct float_t {
+    float value;
+    struct float_t *next;
+} float_t;
+
+
+float_t *first_float = NULL;
+float_t *last_float = NULL;
+
+int search_insert_float(float value) {
+    float_t *f = first_float;
+    int pos = 0;
+
+    // search float
+    while (f) {
+	if (value == f->value)
+	    return pos;
+	f = f->next;
+	pos++;
+    }
+
+    // insert float
+    if (!first_float) { // empty table
+	first_float = malloc(sizeof(float_t));
+	last_float = first_float;
+    }
+    else {
+	last_float->next = malloc(sizeof(float_t));
+	last_float = last_float->next;
+    }
+    last_float->value = value;
+    last_float->next = NULL;
+    
+    return pos;
+}
+
+void print_float_table() {
+    float_t *f = first_float;
+    int pos = 0;
+    printf("--- FLOAT TABLE (class %d) ---\n", TYPE_FLOAT);
+    while(f) {
+	printf("%4d  %f\n", pos, f->value);
+	pos++;
+	f = f->next;
     }
     printf("\n");
 }

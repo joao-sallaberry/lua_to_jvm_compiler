@@ -16,7 +16,6 @@ token_t *create_token(token_type_t type) {
     token_t *t = malloc(sizeof(token_t));
     t->type = type;
     t->int_value = 0;
-    t->flo_value = 0;
     t->next = NULL;
     
     if (!token_list)
@@ -36,7 +35,7 @@ token_t *add_int_token(int i) {
 
 token_t *add_float_token(float f) {
     token_t *t = create_token(TYPE_FLOAT);
-    t->flo_value = f;
+    t->int_value = search_insert_float(f);
     return t;
 }
 
@@ -70,16 +69,7 @@ void print_token_list() {
     printf("--- TOKEN LIST ---\n");
     while (t) {
 	printf("class=%d value=", t->type);
-	if (t->type == TYPE_NUMBER)
-	    printf("%d", t->int_value);
-	else if (t->type == TYPE_FLOAT)
-	    printf("%f", t->flo_value);
-	else if (t->type == TYPE_KEYWORD)
-	    printf("%d", t->int_value);
-	else if (t->type == TYPE_IDENTIFIER)
-	    printf("%d", t->int_value);
-	else if (t->type == TYPE_SYMBOL)
-	    printf("%d", t->int_value);
+	printf("%d", t->int_value);
 	printf("\n");
 
         t = t->next;  
