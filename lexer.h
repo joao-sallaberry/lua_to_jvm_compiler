@@ -1,6 +1,8 @@
 #ifndef LEXER_H
 #define LEXER_H
 
-int get_next_token(FILE * );
+#include "token.h"
+
+token_t *get_next_token(FILE * );
 
 #endif

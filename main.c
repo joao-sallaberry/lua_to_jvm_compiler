@@ -9,9 +9,8 @@ int main() {
 
     token_t *t;
 
-    while (!get_next_token(f)) {
-    	
-    	//printf("%d\n", t->type);
+    while (t = get_next_token(f)) {
+    	printf("%d\n", t->type);
     }    
 
     print_token_list();

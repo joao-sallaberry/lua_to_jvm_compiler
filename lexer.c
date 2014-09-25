@@ -94,37 +94,38 @@ token_type_t token_type;
 
 state_t current_state = ST_INITIAL;
 
-int make_token() {
+token_t *make_token() {
+    token_t *t = NULL;
     switch (current_state) {
     case ST_NUMBER:
-	add_int_token(buffer_int);	
+	t = add_int_token(buffer_int);	
 	break;
     case ST_FLOAT:
-	add_float_token(buffer_int + buffer_fl);
+	t = add_float_token(buffer_int + buffer_fl);
 	break;
     case ST_ALPHANUM: // TODO create state for receiving digits
 	buffer[buffer_pt] = 0;
-	add_alphanum_token(buffer);
+	t = add_alphanum_token(buffer);
 	break;
     case ST_SPECIALC:
-	add_specialc_token(buffer);
+	t = add_specialc_token(buffer);
 	break;
     default:
 	fprintf(stderr, "ERROR: token being created in wrong state\n");
     }
-    return 0;
+    return t;
 }
 
 char current_char = '\t';
 char next_char = '\t';
 
-int get_next_token(FILE *f) {
+token_t *get_next_token(FILE *f) {
     current_state = ST_INITIAL;
 
     while (1) {
 	current_char = getc(f);//current_char = next_char;
 	if (current_char == EOF)
-	    return -1;
+	    return NULL;
         //next_char = getc(f);
 	entry_type_t cur_char_type = classify_entry(current_char);
 	

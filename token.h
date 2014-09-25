@@ -17,10 +17,10 @@ typedef struct token {
 void init_token_list();
 token_t *get_token_list();
 token_t *create_token(token_type_t );
-void add_int_token(int );
-void add_float_token(float );
-void add_alphanum_token(char * );
-void add_specialc_token(char *);
+token_t *add_int_token(int );
+token_t *add_float_token(float );
+token_t *add_alphanum_token(char * );
+token_t *add_specialc_token(char *);
 void print_token_list();
 
 #endif

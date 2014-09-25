@@ -28,36 +28,39 @@ token_t *create_token(token_type_t type) {
     return t;
 }
 
-void add_int_token(int i) {
+token_t *add_int_token(int i) {
     token_t *t = create_token(TYPE_NUMBER);
     t->int_value = i;
+    return t;
 }
 
-void add_float_token(float f) {
+token_t *add_float_token(float f) {
     token_t *t = create_token(TYPE_FLOAT);
     t->flo_value = f;
+    return t;
 }
 
-void add_alphanum_token(char* value) {
+token_t *add_alphanum_token(char* value) {
     token_t *t = NULL;
     for (int i = 0; i < size_keywords; i++)
 	if (!strcmp(value, keywords[i])) {
 	    t = create_token(TYPE_KEYWORD);
 	    t->int_value = i;
-	    break;
+	    return t;
 	}
     if (!t) {
 	t = create_token(TYPE_IDENTIFIER);
 	t->int_value = search_insert_sym(value);
     }
+    return t;
 }
 
-void add_specialc_token(char* sym) {
+token_t *add_specialc_token(char* sym) {
     token_t *t = create_token(TYPE_SYMBOL);
     for (int i = 0; ; i++)
 	if (!strcmp(sym, specialc_table[i])) {
 	    t->int_value = i;
-	    return;
+	    return t;
 	}
 }
 
