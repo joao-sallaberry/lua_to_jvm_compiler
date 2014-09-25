@@ -11,7 +11,7 @@ int main() {
 
     printf("--- TOKENS ---\n");
     while (t = get_next_token(f)) {
-	printf("class=%d value=%d\n", t->type, t->int_value);
+	printf("class=%d l=%2d c=%2d value=%d\n", t->type, t->line, t->column, t->int_value);
     }
     printf("\n");
 

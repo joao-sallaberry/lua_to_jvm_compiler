@@ -59,8 +59,8 @@ inline char * is_specialc(char c) {
     return strchr("<>=()", c);
 }
 
-unsigned int line = 0;
-unsigned int column = 0;
+unsigned int line = 1, column = 0;
+unsigned int token_line, token_column = 0;
 
 entry_type_t classify_entry(char c) {
     if (c == ' ' || c == '\t')
@@ -76,7 +76,8 @@ entry_type_t classify_entry(char c) {
     else if (c == '#')
 	return EN_HASHTAG;
     else if (c == '\n') {
-	column++;
+	line++;
+	column = 0;
 	return EN_NEWLINE;
     }
     else
@@ -113,6 +114,8 @@ token_t *make_token() {
     default:
 	fprintf(stderr, "ERROR: token being created in wrong state\n");
     }
+    t->column = token_column;
+    t->line = token_line; 
     return t;
 }
 
@@ -124,6 +127,7 @@ token_t *get_next_token(FILE *f) {
 
     while (1) {
 	current_char = getc(f);//current_char = next_char;
+	column++;
 	if (current_char == EOF)
 	    return NULL;
         //next_char = getc(f);
@@ -133,12 +137,19 @@ token_t *get_next_token(FILE *f) {
 	if (current_state != ST_INITIAL &&
 	    next_state[current_state][cur_char_type] == -1) {
 	    ungetc(current_char, f);
+	    column--;
 	    return make_token();
 	}
 	current_state = next_state[current_state][cur_char_type];
         //printf("-%d-", current_state);
     }
 }
+
+void save_position() {
+    token_line = line;
+    token_column = column;
+}
+
 
 //** define state actions **//
 
@@ -148,11 +159,13 @@ void do_nothing() {
 void do_initial_digit() {
     buffer_int = 0;
     do_number_digit();
+    save_position();
 }
 
 void do_initial_alpha() {
     buffer_pt = 0;
     do_alphanum_alpha();
+    save_position();
 }
 
 unsigned int fl_divider;
@@ -160,11 +173,13 @@ void do_initial_dot() {
     buffer_int = 0;
     buffer_fl = 0;
     fl_divider = 1;
+    save_position();
 }
 
 void do_initial_specialc() {
     buffer[0] = current_char;
     buffer[1] = 0;
+    save_position();
 }
 
 void do_number_digit() {
