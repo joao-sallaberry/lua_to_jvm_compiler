@@ -9,11 +9,12 @@ int main() {
 
     token_t *t;
 
+    printf("--- TOKENS ---\n");
     while (t = get_next_token(f)) {
-    	printf("%d\n", t->type);
-    }    
+	printf("class=%d value=%d\n", t->type, t->int_value);
+    }
+    printf("\n");
 
-    print_token_list();
     print_float_table();
     print_keyword_table();
     print_symbol_table();

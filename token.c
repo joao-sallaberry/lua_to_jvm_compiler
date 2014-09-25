@@ -62,20 +62,3 @@ token_t *add_specialc_token(char* sym) {
 	    return t;
 	}
 }
-
-void print_token_list() {
-    token_t * t = token_list;
-
-    printf("--- TOKEN LIST ---\n");
-    while (t) {
-	printf("class=%d value=", t->type);
-	printf("%d", t->int_value);
-	printf("\n");
-
-        t = t->next;  
-    }
-    printf("\n");
-}
-
-
-

@@ -20,6 +20,5 @@ token_t *add_int_token(int );
 token_t *add_float_token(float );
 token_t *add_alphanum_token(char * );
 token_t *add_specialc_token(char *);
-void print_token_list();
 
 #endif
