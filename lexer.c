@@ -14,10 +14,10 @@ state_t const next_state[][NUM_ENTRIES] = {
 // receive        digit         alpha         dot           specialc       hashtag      newline      space 
 /* INITIAL */    {ST_NUMBER,   ST_ALPHANUM,   ST_FLOAT,     ST_SPECIALC, ST_COMMENT,  ST_INITIAL,  ST_INITIAL},
 /* COMMENT */    {ST_COMMENT,  ST_COMMENT,    ST_COMMENT,   ST_COMMENT,  ST_COMMENT,  ST_INITIAL,  ST_COMMENT},
-/* NUMBER */     {ST_NUMBER,   0,             ST_FLOAT,     0,           0,           ST_INITIAL,  ST_INITIAL},
-/* FLOAT */      {ST_FLOAT,    0,             0,            0,           0,           ST_INITIAL,  ST_INITIAL},
-/* ALPHANUM */   {ST_ALPHANUM, ST_ALPHANUM,   0,            0,           0,           ST_INITIAL,  ST_INITIAL},
-/* SPECIALC */   {0,           0,             0,            ST_SPECIALC, 0,           ST_INITIAL,  ST_INITIAL}
+/* NUMBER */     {ST_NUMBER,   -1,            ST_FLOAT,     -1,          -1,          -1,          -1},
+/* FLOAT */      {ST_FLOAT,    -1,            -1,           -1,          -1,          -1,          -1},
+/* ALPHANUM */   {ST_ALPHANUM, ST_ALPHANUM,   -1,           -1,          -1,          -1,          -1},
+/* SPECIALC */   {-1,          -1,            -1,           ST_SPECIALC, -1,          -1,          -1}
 };
 
 // declare state actions
@@ -59,6 +59,9 @@ inline char * is_specialc(char c) {
     return strchr("<>=()", c);
 }
 
+unsigned int line = 0;
+unsigned int column = 0;
+
 entry_type_t classify_entry(char c) {
     if (c == ' ' || c == '\t')
 	return EN_SPACE;
@@ -72,8 +75,11 @@ entry_type_t classify_entry(char c) {
 	return EN_DOT;
     else if (c == '#')
 	return EN_HASHTAG;
-    else if (c == '\n')
-	return EN_NEWLINE;    else
+    else if (c == '\n') {
+	column++;
+	return EN_NEWLINE;
+    }
+    else
 	fprintf(stderr, "entry char is of unknown type\n");
     return 1;
 }
@@ -101,7 +107,7 @@ int make_token() {
 	add_alphanum_token(buffer);
 	break;
     case ST_SPECIALC:
-    add_specialc_token(buffer);
+	add_specialc_token(buffer);
 	break;
     default:
 	fprintf(stderr, "ERROR: token being created in wrong state\n");
@@ -124,7 +130,7 @@ int get_next_token(FILE *f) {
 	
 	action_table[current_state][cur_char_type]();
 	if (current_state != ST_INITIAL &&
-	    next_state[current_state][cur_char_type] == 0) {
+	    next_state[current_state][cur_char_type] == -1) {
 	    ungetc(current_char, f);
 	    return make_token();
 	}
