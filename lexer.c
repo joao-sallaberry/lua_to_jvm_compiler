@@ -7,17 +7,17 @@
 
 
 // define states
-typedef enum {ST_INITIAL, ST_COMMENT, ST_NUMBER, ST_FLOAT, ST_ALPHANUM, ST_SYMBOL, NUM_STATES} state_t;
-typedef enum {EN_DIGIT, EN_ALPHA, EN_DOT, EN_SYMBOL, EN_HASHTAG, EN_NEWLINE, EN_SPACE, NUM_ENTRIES} entry_type_t;
+typedef enum {ST_INITIAL, ST_COMMENT, ST_NUMBER, ST_FLOAT, ST_ALPHANUM, ST_SPECIALC, NUM_STATES} state_t;
+typedef enum {EN_DIGIT, EN_ALPHA, EN_DOT, EN_SPECIALC, EN_HASHTAG, EN_NEWLINE, EN_SPACE, NUM_ENTRIES} entry_type_t;
 
 state_t const next_state[][NUM_ENTRIES] = {
-// receive        digit         alpha         dot           symbol       hashtag      newline      space 
-/* INITIAL */    {ST_NUMBER,   ST_ALPHANUM,   ST_FLOAT,     ST_SYMBOL,   ST_COMMENT,  ST_INITIAL,  ST_INITIAL},
+// receive        digit         alpha         dot           specialc       hashtag      newline      space 
+/* INITIAL */    {ST_NUMBER,   ST_ALPHANUM,   ST_FLOAT,     ST_SPECIALC, ST_COMMENT,  ST_INITIAL,  ST_INITIAL},
 /* COMMENT */    {ST_COMMENT,  ST_COMMENT,    ST_COMMENT,   ST_COMMENT,  ST_COMMENT,  ST_INITIAL,  ST_COMMENT},
 /* NUMBER */     {ST_NUMBER,   0,             ST_FLOAT,     0,           0,           ST_INITIAL,  ST_INITIAL},
 /* FLOAT */      {ST_FLOAT,    0,             0,            0,           0,           ST_INITIAL,  ST_INITIAL},
 /* ALPHANUM */   {ST_ALPHANUM, ST_ALPHANUM,   0,            0,           0,           ST_INITIAL,  ST_INITIAL},
-/* SYMBOL */     {0,           0,             0,            ST_SYMBOL,   0,           ST_INITIAL,  ST_INITIAL}
+/* SPECIALC */   {0,           0,             0,            ST_SPECIALC, 0,           ST_INITIAL,  ST_INITIAL}
 };
 
 // declare state actions
@@ -25,7 +25,7 @@ void do_nothing();
 void do_initial_digit();
 void do_initial_alpha();
 void do_initial_dot();
-void do_initial_symbol();
+void do_initial_specialc();
 void do_number_digit();
 void do_number_dot();
 void do_number_space();
@@ -34,17 +34,17 @@ void do_float_space();
 void do_alphanum_digit();
 void do_alphanum_alpha();
 void do_alphanum_space();
-void do_symbol_symbol();
-void do_symbol_space();
+void do_specialc_specialc();
+void do_specialc_space();
 
 void (*const action_table [NUM_STATES][NUM_ENTRIES]) (void) = {
-//                digit               alpha               dot              symbol              hashtag              newline            space
-/* INITIAL */    {do_initial_digit,   do_initial_alpha,   do_initial_dot,  do_initial_symbol,  do_nothing,          do_nothing,        do_nothing},
-/* COMMENT */    {do_nothing,         do_nothing,         do_nothing,      do_nothing,         do_nothing,          do_nothing,        do_nothing},
-/* NUMBER */     {do_number_digit,    do_nothing,         do_number_dot,   do_nothing,         do_nothing,          do_number_space,   do_number_space},
-/* FLOAT */      {do_float_digit,     do_nothing,         do_nothing,      do_nothing,         do_nothing,          do_float_space,    do_float_space},
-/* ALPHANUM */   {do_alphanum_digit,  do_alphanum_alpha,  do_nothing,      do_nothing,         do_nothing,          do_alphanum_space, do_alphanum_space},
-/* SYMBOL */     {do_nothing,         do_nothing,         do_nothing,      do_symbol_symbol,   do_nothing,          do_symbol_space,   do_symbol_space}
+//                digit               alpha               dot              specialc              hashtag              newline            space
+/* INITIAL */    {do_initial_digit,   do_initial_alpha,   do_initial_dot,  do_initial_specialc,  do_nothing,    do_nothing,        do_nothing},
+/* COMMENT */    {do_nothing,         do_nothing,         do_nothing,      do_nothing,           do_nothing,    do_nothing,        do_nothing},
+/* NUMBER */     {do_number_digit,    do_nothing,         do_number_dot,   do_nothing,           do_nothing,    do_number_space,   do_number_space},
+/* FLOAT */      {do_float_digit,     do_nothing,         do_nothing,      do_nothing,           do_nothing,    do_float_space,    do_float_space},
+/* ALPHANUM */   {do_alphanum_digit,  do_alphanum_alpha,  do_nothing,      do_nothing,           do_nothing,    do_alphanum_space, do_alphanum_space},
+/* SPECIALC */   {do_nothing,         do_nothing,         do_nothing,      do_specialc_specialc, do_nothing,    do_specialc_space, do_specialc_space}
 };
 
 
@@ -55,7 +55,7 @@ inline int is_digit(char c) {
 inline int is_alpha(char c) {
     return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
 }
-inline char * is_symbol(char c) {
+inline char * is_specialc(char c) {
     return strchr("<>=()", c);
 }
 
@@ -66,15 +66,14 @@ entry_type_t classify_entry(char c) {
 	return EN_DIGIT;
     else if (is_alpha(c))
 	return EN_ALPHA;
-    else if (is_symbol(c))
-	return EN_SYMBOL;
+    else if (is_specialc(c))
+	return EN_SPECIALC;
     else if (c == '.')
 	return EN_DOT;
     else if (c == '#')
 	return EN_HASHTAG;
     else if (c == '\n')
-	return EN_NEWLINE;
-    else
+	return EN_NEWLINE;    else
 	fprintf(stderr, "entry char is of unknown type\n");
     return 1;
 }
@@ -87,29 +86,51 @@ float buffer_fl;
 char buffer_sym;
 token_type_t token_type;
 
-char current_char = ' ';
-char next_char = ' ';
+state_t current_state = ST_INITIAL;
 
-void run_lexer(char* file_name) {
-    state_t current_state = ST_INITIAL;
+int make_token() {
+    switch (current_state) {
+    case ST_NUMBER:
+	add_int_token(buffer_int);	
+	break;
+    case ST_FLOAT:
+	add_float_token(buffer_int + buffer_fl);
+	break;
+    case ST_ALPHANUM: // TODO create state for receiving digits
+	buffer[buffer_pt] = 0;
+	add_alphanum_token(buffer);
+	break;
+    case ST_SPECIALC:
+    add_specialc_token(buffer);
+	break;
+    default:
+	fprintf(stderr, "ERROR: token being created in wrong state\n");
+    }
+    return 0;
+}
 
-    FILE *f;
-    f = fopen(file_name, "r"); // TODO treat return
+char current_char = '\t';
+char next_char = '\t';
 
-    init_token_list();
+int get_next_token(FILE *f) {
+    current_state = ST_INITIAL;
 
     while (1) {
-	current_char = next_char;
-	if(current_char == EOF)
-	    break;
-        next_char = getc(f);
+	current_char = getc(f);//current_char = next_char;
+	if (current_char == EOF)
+	    return -1;
+        //next_char = getc(f);
 	entry_type_t cur_char_type = classify_entry(current_char);
-
+	
 	action_table[current_state][cur_char_type]();
+	if (current_state != ST_INITIAL &&
+	    next_state[current_state][cur_char_type] == 0) {
+	    ungetc(current_char, f);
+	    return make_token();
+	}
 	current_state = next_state[current_state][cur_char_type];
         //printf("-%d-", current_state);
     }
-
 }
 
 //** define state actions **//
@@ -134,7 +155,7 @@ void do_initial_dot() {
     fl_divider = 1;
 }
 
-void do_initial_symbol() {
+void do_initial_specialc() {
     buffer[0] = current_char;
     buffer[1] = 0;
 }
@@ -150,7 +171,6 @@ void do_number_dot() {
 }
 
 void do_number_space() {
-    add_int_token(buffer_int);
 }
 
 void do_float_digit() {
@@ -159,7 +179,6 @@ void do_float_digit() {
 }
 
 void do_float_space() {
-    add_float_token(buffer_int + buffer_fl);
 }
 
 void do_alphanum_digit() {
@@ -170,22 +189,13 @@ void do_alphanum_alpha() {
     buffer[buffer_pt++] = current_char;
 }
 
-void do_alphanum_space() {// TODO create state for receiving digits
-    buffer[buffer_pt] = 0;
-    for (int i = 0; i < size_keywords; i++) {
-	if (!strcmp(buffer, keywords[i])) {
-	    add_keyword_token(buffer);
-	    return;
-	}
-    }
-    add_identifier_token(buffer);
+void do_alphanum_space() {
 }
 
-void do_symbol_symbol() { //TODO
+void do_specialc_specialc() { //TODO
 }
 
-void do_symbol_space() {
-    add_specialc_token(buffer);
+void do_specialc_space() {
 }
 
 //TODO ask

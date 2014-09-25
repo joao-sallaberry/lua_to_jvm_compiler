@@ -23,7 +23,6 @@ typedef struct symbol {
 
 symbol_t *first_symbol = NULL;
 symbol_t *last_symbol = NULL;
-//size_t sym_tb_size;
 
 int search_insert_sym(char* value) {
     symbol_t *s = first_symbol;

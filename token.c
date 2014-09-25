@@ -5,13 +5,8 @@
 #include <string.h>
 #include "global.h"
 
-token_t *token_list;
-token_t *last_token;
-
-void init_token_list() {
-    token_list = NULL;
-    last_token = NULL;
-}
+token_t *token_list = NULL;
+token_t *last_token = NULL;
 
 token_t *get_token_list() {
     return token_list;
@@ -43,18 +38,18 @@ void add_float_token(float f) {
     t->flo_value = f;
 }
 
-void add_keyword_token(char* value) {
-    token_t *t = create_token(TYPE_KEYWORD);
+void add_alphanum_token(char* value) {
+    token_t *t = NULL;
     for (int i = 0; i < size_keywords; i++)
 	if (!strcmp(value, keywords[i])) {
+	    t = create_token(TYPE_KEYWORD);
 	    t->int_value = i;
-	    return;
+	    break;
 	}
-}
-
-void add_identifier_token(char* value) {
-    token_t *t = create_token(TYPE_IDENTIFIER);
-    t->int_value = search_insert_sym(value);
+    if (!t) {
+	t = create_token(TYPE_IDENTIFIER);
+	t->int_value = search_insert_sym(value);
+    }
 }
 
 void add_specialc_token(char* sym) {
@@ -71,7 +66,7 @@ void print_token_list() {
 
     printf("--- TOKEN LIST ---\n");
     while (t) {
-	printf("type=%d value=", t->type);
+	printf("class=%d value=", t->type);
 	if (t->type == TYPE_NUMBER)
 	    printf("%d", t->int_value);
 	else if (t->type == TYPE_FLOAT)
@@ -84,7 +79,7 @@ void print_token_list() {
 	    printf("%d", t->int_value);
 	printf("\n");
 
-        t = t->next;   
+        t = t->next;  
     }
     printf("\n");
 }
