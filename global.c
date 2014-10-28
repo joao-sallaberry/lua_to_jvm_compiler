@@ -12,8 +12,11 @@ const char * const specialc_table[] = {"=", "<", ">", ";"};
 
 /* keywords */
 const char * const keywords[] = {
-    "if", "else", "while", "then",
-    "int", "float", "bool"
+    "if", "else", "while", "then", "do", "end", "ret",
+    "int", "float", "bool", "char",
+    "mod",
+    "true", "false"
+    "print"
 };
 size_t size_keywords = (sizeof(keywords) / sizeof(char *));
 
