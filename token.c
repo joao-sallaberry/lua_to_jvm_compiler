@@ -57,7 +57,7 @@ token_t *add_alphanum_token(char* value) {
 token_t *add_specialc_token(char* sym) {
     token_t *t = create_token(TYPE_SYMBOL);
     for (int i = 0; ; i++)
-	if (!strcmp(sym, specialc_table[i])) {
+	if (!strcmp(sym, special_chars[i])) {
 	    t->int_value = i;
 	    return t;
 	}

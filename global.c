@@ -7,15 +7,15 @@
 #include "token.h"
 
 /* special chars */
-const char * const specialc_table[] = {"=", "<", ">", ";"};
-
+const char * const special_chars[] = {"=", "<", ">", ";"};
+size_t size_special_chars = (sizeof(special_chars) / sizeof(char*));
 
 /* keywords */
 const char * const keywords[] = {
-    "if", "else", "while", "then",
+    "if", "else", "while", "then", "for", "begin", "end", "ret",
     "int", "float", "bool"
 };
-size_t size_keywords = (sizeof(keywords) / sizeof(char *));
+size_t size_keywords = (sizeof(keywords) / sizeof(char*));
 
 void print_keyword_table() {
     printf("--- KEYWORD TABLE (class %d) ---\n", TYPE_KEYWORD);
