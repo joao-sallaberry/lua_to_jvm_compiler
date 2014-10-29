@@ -19,6 +19,6 @@ token_t *create_token(token_type_t );
 token_t *add_int_token(int );
 token_t *add_float_token(float );
 token_t *add_alphanum_token(char * );
-token_t *add_specialc_token(char *);
+token_t *add_specialc_token(char * );
 
 #endif

@@ -6,16 +6,29 @@
 
 #include "token.h"
 
-/* special chars */
+/*** special chars ***/
 const char * const special_chars[] = {"=", "<", ">", ";"};
 size_t size_special_chars = (sizeof(special_chars) / sizeof(char*));
 
-/* keywords */
+
+/*** keywords ***/
 const char * const keywords[] = {
-    "if", "else", "while", "then", "for", "begin", "end", "ret",
-    "int", "float", "bool"
+    "if", "else", "while", "then", "do", "end", "ret",
+    "int", "float", "bool", "char",
+    "mod",
+    "true", "false"
+    "print"
 };
 size_t size_keywords = (sizeof(keywords) / sizeof(char*));
+
+// return keyword position on table
+int keyword_pos(char * str) { //TODO unused??
+    for (int i = 0; i < size_keywords; i++) {
+	if (strcmp(keywords[i], str) == 0)
+	    return i;
+    }
+    return -1; // not found
+}
 
 void print_keyword_table() {
     printf("--- KEYWORD TABLE (class %d) ---\n", TYPE_KEYWORD);
@@ -25,7 +38,7 @@ void print_keyword_table() {
 }
 
 
-/* symbols */
+/*** symbols ***/
 typedef struct symbol {
     char* value;
     struct symbol *next;
@@ -76,7 +89,7 @@ void print_symbol_table() {
 }
 
 
-/* floats */
+/*** floats ***/
 typedef struct float_t {
     float value;
     struct float_t *next;
