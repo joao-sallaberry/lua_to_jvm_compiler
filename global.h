@@ -8,6 +8,7 @@ extern const char * const specialc_table[];
 extern const char * const keywords[];
 size_t size_keywords;
 
+int keyword_pos(char * );
 void print_keyword_table();
 int search_insert_sym(char* value);
 void print_symbol_table();
