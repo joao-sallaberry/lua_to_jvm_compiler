@@ -11,8 +11,12 @@ extern size_t size_keywords;
 
 int keyword_pos(char * );
 void print_keyword_table();
+
+int specialc_pos(char * str);
+
 int search_insert_sym(char* value);
 void print_symbol_table();
+
 int search_insert_float(float value);
 void print_float_table();
 

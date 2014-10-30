@@ -8,7 +8,8 @@
 
 typedef enum{FSM_DECLARACAO_VARIAVEL,
 	     FSM_TIPO,
-	     NUM_FSM} sub_machine_t; 
+	     NUM_FSM
+} sub_machine_t; 
 
 int fsm_declaracao_variavel(token_t * t);
 int fsm_tipo(token_t * t);
@@ -34,8 +35,8 @@ stack_t * stack_top = NULL;
 int analyse(FILE * f) {
     token_t *t;
 
-    sub_machine_t main_machine = sub_machine = FSM_TIPO;
-    int final_state = 1;
+    sub_machine_t main_machine = sub_machine = FSM_DECLARACAO_VARIAVEL;
+    int final_state = 3;
     state = 0;
 
     printf("--- TOKENS ---\n");
@@ -51,15 +52,17 @@ int analyse(FILE * f) {
 	return -1;
 }
 
-void push() {
+// push current machine and return state to the stack
+void push(int ret_st) {
     stack_t * s = malloc(sizeof (stack_t));
     s->sub_machine = sub_machine;
-    s->state = state;
+    s->state = ret_st;
     s->next = stack_top;
 
     stack_top = s;
 }
 
+// pop return machine and state from the stack
 int pop() {
     if (stack_top == NULL)
 	return -1; //TODO: error
@@ -71,17 +74,42 @@ int pop() {
     return st;
 }
 
+// call a sub-machine and execute semantic actions
+int call_sm(sub_machine_t sm, int ret_st) {
+    push(ret_st);
+    sub_machine = sm;
+    return 0; // state on new sm
+}
+
+// semantic action
+void semantico_tbd() {
+    printf("TODO -- sm:%2d  state:%2d\n", sub_machine, state);
+}
+
 //*** sub-machines ***//
 int fsm_declaracao_variavel(token_t * t) { //TODO: unfinished
     switch (state) {
     case 0:
-	if (t->type == TYPE_KEYWORD)
-	    return 1;
+	semantico_tbd();
+	return call_sm(FSM_TIPO, 1);
+
+    case 1:
+	if (t->type == TYPE_IDENTIFIER) {
+	    semantico_tbd();
+	    return 2;
+	}
 	break;
 
-	//    case 1:
-	//if (t->type == TYPE_)
+    case 2:
+	if (t->type == TYPE_SYMBOL && t->int_value == specialc_pos(";")) {
+	    semantico_tbd();
+	    return 3;
+	}
+	break;
 
+    case 3:
+	return pop();
+	
     }
     return -1;
 }
@@ -93,9 +121,10 @@ int fsm_tipo(token_t * t) {
 		    t->int_value == keyword_pos("int") ||
 		    t->int_value == keyword_pos("float") ||
 	            t->int_value == keyword_pos("bool") ||
-	            t->int_value == keyword_pos("char")))
-	    //printf("lalal");
+	            t->int_value == keyword_pos("char"))) {
+	    semantico_tbd();
 	    return 1;
+	}
 	break;
 	
     case 1:

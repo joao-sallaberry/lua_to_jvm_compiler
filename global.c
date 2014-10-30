@@ -7,8 +7,23 @@
 #include "token.h"
 
 /*** special chars ***/
-const char * const special_chars[] = {"=", "<", ">", ";"};
+const char * const special_chars[] = {
+    "=", ";", ",", "'",
+    "+", "-", "*", "/",
+    "(", ")",
+    "==", "!=" "<", ">", "<=", ">=",
+    "&&", "||"
+};
 size_t size_special_chars = (sizeof(special_chars) / sizeof(char*));
+
+// return special char index
+int specialc_pos(char * str) {
+    for (int i = 0; i < size_special_chars; i++) {
+	if (strcmp(special_chars[i], str) == 0)
+	    return i;
+    }
+    return -1; // not found
+}
 
 
 /*** keywords ***/
@@ -21,8 +36,8 @@ const char * const keywords[] = {
 };
 size_t size_keywords = (sizeof(keywords) / sizeof(char*));
 
-// return keyword position on table
-int keyword_pos(char * str) { //TODO unused??
+// return keyword index
+int keyword_pos(char * str) {
     for (int i = 0; i < size_keywords; i++) {
 	if (strcmp(keywords[i], str) == 0)
 	    return i;
