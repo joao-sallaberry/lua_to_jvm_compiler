@@ -6,20 +6,20 @@
 
 #include "token.h"
 
-/*** special chars ***/
-const char * const special_chars[] = {
+/*** operators ***/
+const char * const operators[] = {
     "=", ";", ",", "'",
     "+", "-", "*", "/",
     "(", ")",
     "==", "!=" "<", ">", "<=", ">=",
     "&&", "||"
 };
-size_t size_special_chars = (sizeof(special_chars) / sizeof(char*));
+size_t size_operators = (sizeof(operators) / sizeof(char*));
 
-// return special char index
-int specialc_pos(char * str) {
-    for (int i = 0; i < size_special_chars; i++) {
-	if (strcmp(special_chars[i], str) == 0)
+// return operator index
+int operator_pos(char * str) {
+    for (int i = 0; i < size_operators; i++) {
+	if (strcmp(operators[i], str) == 0)
 	    return i;
     }
     return -1; // not found

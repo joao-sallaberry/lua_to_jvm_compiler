@@ -56,7 +56,7 @@ inline int is_alpha(char c) {
     return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
 }
 inline char * is_specialc(char c) {
-    return strchr("<>=()", c);
+    return strchr(",;'+-*/<>=!()&|", c);
 }
 
 unsigned int line = 1, column = 0;
@@ -109,7 +109,7 @@ token_t *make_token() {
 	t = add_alphanum_token(buffer);
 	break;
     case ST_SPECIALC:
-	t = add_specialc_token(buffer);
+	t = add_operator_token(buffer);
 	break;
     default:
 	fprintf(stderr, "ERROR: token being created in wrong state\n");
@@ -177,7 +177,7 @@ void do_initial_dot() {
 }
 
 void do_initial_specialc() {
-    buffer[0] = current_char;
+    buffer[0] = current_char; // TODO:change vector pos to generic
     buffer[1] = 0;
     save_position();
 }
@@ -214,7 +214,9 @@ void do_alphanum_alpha() {
 void do_alphanum_space() {
 }
 
-void do_specialc_specialc() { //TODO
+void do_specialc_specialc() {
+    buffer[1] = current_char;
+    buffer[2] = 0;
 }
 
 void do_specialc_space() {

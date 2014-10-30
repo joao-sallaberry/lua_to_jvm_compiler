@@ -101,7 +101,7 @@ int fsm_declaracao_variavel(token_t * t) { //TODO: unfinished
 	break;
 
     case 2:
-	if (t->type == TYPE_SYMBOL && t->int_value == specialc_pos(";")) {
+	if (t->type == TYPE_SYMBOL && t->int_value == operator_pos(";")) {
 	    semantico_tbd();
 	    return 3;
 	}

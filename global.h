@@ -3,16 +3,14 @@
 
 #include <stdlib.h>
 
-extern const char * const special_chars[];
-extern size_t size_special_chars;
+extern const char * const operators[];
+extern size_t size_operators;
+int operator_pos(char *);
 
 extern const char * const keywords[];
 extern size_t size_keywords;
-
 int keyword_pos(char * );
 void print_keyword_table();
-
-int specialc_pos(char * str);
 
 int search_insert_sym(char* value);
 void print_symbol_table();
