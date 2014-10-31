@@ -9,9 +9,9 @@ int main() {
 
     int status = analyse(f);
     if (!status)
-	printf("ACCEPTED!\n");
+	printf("ACCEPTED!\n\n");
     else
-	printf("FAILURE\n");
+	printf("NOT ACCEPTED\n\n");
 
 
     print_float_table();
