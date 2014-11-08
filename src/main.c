@@ -5,7 +5,7 @@
 
 int main() {
     FILE *f;
-    f = fopen("ENTRADA.txt", "r"); // TODO treat return
+    f = fopen("../ENTRADA.txt", "r"); // TODO treat return
 
     int status = analyse(f);
     if (!status)
