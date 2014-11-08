@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--Created with JFLAP 6.4.--><structure>
+	<type>fa</type>
+	<automaton>
+		<!--The list of states.-->
+		<state id="0" name="q0">
+			<x>20.0</x>
+			<y>72.0</y>
+			<initial/>
+		</state>
+		<state id="1" name="q1">
+			<x>423.0</x>
+			<y>66.0</y>
+			<final/>
+		</state>
+		<state id="2" name="q2">
+			<x>205.0</x>
+			<y>228.0</y>
+		</state>
+		<!--The list of transitions.-->
+		<transition>
+			<from>0</from>
+			<to>1</to>
+			<read>retorno</read>
+		</transition>
+		<transition>
+			<from>0</from>
+			<to>1</to>
+			<read>laco</read>
+		</transition>
+		<transition>
+			<from>0</from>
+			<to>1</to>
+			<read>atribuicao</read>
+		</transition>
+		<transition>
+			<from>0</from>
+			<to>1</to>
+			<read>condicional</read>
+		</transition>
+		<transition>
+			<from>2</from>
+			<to>1</to>
+			<read>";"</read>
+		</transition>
+		<transition>
+			<from>0</from>
+			<to>1</to>
+			<read>declaracao_variavel</read>
+		</transition>
+		<transition>
+			<from>0</from>
+			<to>2</to>
+			<read>expressao</read>
+		</transition>
+	</automaton>
+</structure>
