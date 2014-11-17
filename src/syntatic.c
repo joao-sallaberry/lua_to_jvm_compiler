@@ -13,6 +13,12 @@ typedef enum{FSM_DECLARACAO_VARIAVEL,
 	     FSM_ATRIBUICAO,
 	     FSM_EXPRESSAO,
 	     FSM_TERMO_E,
+	     FSM_TERMO_IGUALDADE,
+	     FSM_TERMO_RELACIONAL,
+	     FSM_TERMO_ADITIVO,
+	     FSM_TERMO_MULTIPLICATIVO,
+	     FSM_TERMO_PRIMARIO,
+	     FSM_ARGUMENTOS,
 	     FSM_TIPO,
 	     NUM_FSM
 } sub_machine_t; 
@@ -21,6 +27,12 @@ int fsm_declaracao_variavel(token_t * t);
 int fsm_atribuicao(token_t * t);
 int fsm_expressao(token_t * t);
 int fsm_termo_e(token_t * t);
+int fsm_termo_igualdade(token_t * t);
+int fsm_termo_relacional(token_t * t);
+int fsm_termo_aditivo(token_t * t);
+int fsm_termo_multiplicativo(token_t * t);
+int fsm_termo_primario(token_t * t);
+int fsm_argumentos(token_t * t);
 int fsm_tipo(token_t * t);
 
 int (*const sub_machines[NUM_FSM]) (token_t * ) = {
@@ -28,6 +40,12 @@ int (*const sub_machines[NUM_FSM]) (token_t * ) = {
     fsm_atribuicao,
     fsm_expressao,
     fsm_termo_e,
+    fsm_termo_igualdade,
+    fsm_termo_relacional,
+    fsm_termo_aditivo,
+    fsm_termo_multiplicativo,
+    fsm_termo_primario,
+    fsm_argumentos,
     fsm_tipo
 };
 
@@ -66,7 +84,7 @@ int analyse(FILE * f) {
     state = 0;
 
     printf("--- syntax check ---\n");
-    while (t = get_token_cond(f)) {
+    while ((t = get_token_cond(f))) {
 	state = sub_machines[sub_machine](t);
 	if (state == -1) break;
     }
@@ -173,6 +191,7 @@ int fsm_atribuicao(token_t * t) {
 	break;
 
     case 4:
+	semantico_tbd();
 	return pop();
 
     }
@@ -190,12 +209,15 @@ int fsm_expressao(token_t * t) {
 	    semantico_tbd();
 	    return 2;
 	}
+	semantico_tbd();
+	return pop();
 
     case 2:
 	semantico_tbd();
 	return call_sm(FSM_EXPRESSAO, 3);
 
     case 3:
+	semantico_tbd();
 	return pop();
 
     }
@@ -203,6 +225,194 @@ int fsm_expressao(token_t * t) {
 }
 
 int fsm_termo_e(token_t * t) {
+    switch (state) {
+    case 0:
+	semantico_tbd();
+	return call_sm(FSM_TERMO_IGUALDADE, 1);
+
+    case 1:
+	if (t->type == TYPE_SYMBOL && t->value == operator_pos("&&")) {
+	    semantico_tbd();
+	    return 2;
+	}
+	semantico_tbd();
+	return pop();
+
+    case 2:
+	semantico_tbd();
+	return call_sm(FSM_TERMO_E, 3);
+
+    case 3:
+	semantico_tbd();
+	return pop();
+
+    }
+    return -1;
+}
+
+int fsm_termo_igualdade(token_t * t) {
+    switch (state) {
+    case 0:
+	semantico_tbd();
+	return call_sm(FSM_TERMO_RELACIONAL, 1);
+
+    case 1:
+	if (t->type == TYPE_SYMBOL && (t->value == operator_pos("==") || t->value == operator_pos("!="))) {
+	    semantico_tbd();
+	    return 2;
+	}
+	semantico_tbd();
+	return pop();
+
+    case 2:
+	semantico_tbd();
+	return call_sm(FSM_TERMO_IGUALDADE, 3);
+
+    case 3:
+	semantico_tbd();
+	return pop();
+
+    }
+    return -1;
+}
+
+int fsm_termo_relacional(token_t * t) {
+    switch (state) {
+    case 0:
+	semantico_tbd();
+	return call_sm(FSM_TERMO_ADITIVO, 1);
+
+    case 1:
+	if (t->type == TYPE_SYMBOL && (t->value == operator_pos(">") || t->value == operator_pos("<") || t->value == operator_pos(">=") || t->value == operator_pos("<="))) {
+	    semantico_tbd();
+	    return 2;
+	}
+	semantico_tbd();
+	return pop();
+
+    case 2:
+	semantico_tbd();
+	return call_sm(FSM_TERMO_RELACIONAL, 3);
+
+    case 3:
+	semantico_tbd();
+	return pop();
+
+    }
+    return -1;
+}
+
+int fsm_termo_aditivo(token_t * t) {
+    switch (state) {
+    case 0:
+	semantico_tbd();
+	return call_sm(FSM_TERMO_MULTIPLICATIVO, 1);
+
+    case 1:
+	if (t->type == TYPE_SYMBOL && (t->value == operator_pos("+") || t->value == operator_pos("-"))) {
+	    semantico_tbd();
+	    return 2;
+	}
+	semantico_tbd();
+	return pop();
+
+    case 2:
+	semantico_tbd();
+	return call_sm(FSM_TERMO_ADITIVO, 3);
+
+    case 3:
+	semantico_tbd();
+	return pop();
+
+    }
+    return -1;
+}
+
+int fsm_termo_multiplicativo(token_t * t) {
+    switch (state) {
+    case 0:
+	semantico_tbd();
+	return call_sm(FSM_TERMO_PRIMARIO, 1);
+
+    case 1:
+	if ((t->type == TYPE_SYMBOL && (t->value == operator_pos("*") || t->value == operator_pos("/"))) ||
+	    (t->type == TYPE_KEYWORD && t->value == keyword_pos("mod")) ) {
+	    semantico_tbd();
+	    return 2;
+	}
+	semantico_tbd();
+	return pop();
+
+    case 2:
+	semantico_tbd();
+	return call_sm(FSM_TERMO_MULTIPLICATIVO, 3);
+
+    case 3:
+	semantico_tbd();
+	return pop();
+
+    }
+    return -1;
+}
+
+int fsm_termo_primario(token_t * t) {
+    switch (state) {
+    case 0:
+	if (t->type == TYPE_IDENTIFIER) {
+	    semantico_tbd();
+	    return 1;
+	}
+	else if (t->type == TYPE_NUMBER ||
+		 t->type == TYPE_FLOAT ||
+		 (t->type == TYPE_KEYWORD && (t->value == keyword_pos("true") || t->value == keyword_pos("false")))) {
+	    semantico_tbd();
+	    return 4;
+	}
+	else if (t->type == TYPE_SYMBOL && t->value == operator_pos("(")) {
+	    semantico_tbd();
+	    return 5;
+	}
+	break;
+
+    case 1:
+	if (t->type == TYPE_SYMBOL && t->value == operator_pos("(")) {
+	    semantico_tbd();
+	    return 2;
+	}
+	semantico_tbd();
+	return pop();
+
+    case 2:
+	semantico_tbd();
+	return call_sm(FSM_ARGUMENTOS, 3);
+
+    case 3:
+	if (t->type == TYPE_SYMBOL && t->value == operator_pos(")")) {
+	    semantico_tbd();
+	    return 4;
+	}
+	break;
+
+    case 4:
+	semantico_tbd();
+	return pop();
+
+    case 5:
+      	semantico_tbd();
+	return call_sm(FSM_EXPRESSAO, 6);
+
+    case 6:
+	if (t->type == TYPE_SYMBOL && t->value == operator_pos(")")) {
+	    semantico_tbd();
+	    return 4;
+	}
+    break;
+
+    }
+    return -1;
+}
+
+int fsm_argumentos(token_t * t) { //TODO
     return -1;
 }
 
@@ -220,6 +430,7 @@ int fsm_tipo(token_t * t) {
 	break;
 	
     case 1:
+	semantico_tbd();
 	return pop();
 	
     }
