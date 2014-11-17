@@ -2,4 +2,4 @@
 # # this is a comment
 # 2323 455 9090 lapis  azul < > 23.2 .5
 
-int pato;
+int pato; == int pato;

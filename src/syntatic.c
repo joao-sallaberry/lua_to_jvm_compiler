@@ -39,6 +39,20 @@ typedef struct stack {
 sub_machine_t sub_machine;
 int state;
 stack_t * stack_top = NULL;
+int get_token_flag = 1;
+
+// get next token if sub-machine didn't change
+token_t *get_token_cond(FILE * f) {
+    static token_t *t;
+
+    if (get_token_flag) {
+	t = get_next_token(f);
+	if (t) printf("token class=%d l=%2d c=%2d value=%d\n", t->type, t->line, t->column, t->int_value);
+    }
+    get_token_flag = 1;
+
+    return t;
+}
 
 // analyse syntax of entry
 int analyse(FILE * f) {
@@ -48,10 +62,10 @@ int analyse(FILE * f) {
     int final_state = MAIN_FINAL_ST;
     state = 0;
 
-    printf("--- TOKENS ---\n");
-    while (t = get_next_token(f)) {
-	printf("class=%d l=%2d c=%2d value=%d\n", t->type, t->line, t->column, t->value);
+    printf("--- syntax check ---\n");
+    while (t = get_token_cond(f)) {
 	state = sub_machines[sub_machine](t);
+	if (state == -1) break;
     }
     printf("\n");
     
@@ -69,6 +83,8 @@ void push(int ret_st) {
     s->next = stack_top;
 
     stack_top = s;
+
+    get_token_flag = 0;
 }
 
 // pop return machine and state from the stack
@@ -80,6 +96,9 @@ int pop() {
     sub_machine = stack_top->sub_machine;
     free(stack_top);
     stack_top = stack_top->next;
+
+    get_token_flag = 0;
+
     return st;
 }
 
