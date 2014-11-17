@@ -26,9 +26,7 @@ tipo = "int" | "float" | "bool" | "char".
 
 identificador = letra | letra_digito.
 
-expressao = termo_ou.
-
-termo_ou = termo_e ["||" termo_ou].
+expressao = termo_e ["||" termo_ou].
 
 termo_e = termo_igualdade ["&&" termo_e].
 
@@ -40,9 +38,7 @@ termo_aditivo = termo_multiplicativo ["+" termo_aditivo] | termo_multiplicativo 
 
 termo_multiplicativo = termo_primario ["*" termo_multiplicativo] | termo_primario ["/" termo_multiplicativo] | termo_primario ["mod" termo_multiplicativo].
 
-termo_primario = identificador | constante | chamada_funcao | "("expressao")".
-
-chamada_funcao = identificador"("argurmentos")".
+termo_primario = identificador | constante | identificador"("argurmentos")" | "("expressao")".
 
 argumentos = {expressao ","} expressao | "ε".
 

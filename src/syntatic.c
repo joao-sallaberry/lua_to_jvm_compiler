@@ -6,6 +6,9 @@
 #include <stdlib.h>
 
 
+#define MAIN_MACHINE    FSM_DECLARACAO_VARIAVEL
+#define MAIN_FINAL_ST   3
+
 typedef enum{FSM_DECLARACAO_VARIAVEL,
 	     FSM_ATRIBUICAO,
 	     FSM_EXPRESSAO,
@@ -41,8 +44,8 @@ stack_t * stack_top = NULL;
 int analyse(FILE * f) {
     token_t *t;
 
-    sub_machine_t main_machine = sub_machine = FSM_DECLARACAO_VARIAVEL;
-    int final_state = 3;
+    sub_machine_t main_machine = sub_machine = MAIN_MACHINE;
+    int final_state = MAIN_FINAL_ST;
     state = 0;
 
     printf("--- TOKENS ---\n");
@@ -155,6 +158,25 @@ int fsm_atribuicao(token_t * t) {
 }
 
 int fsm_expressao(token_t * t) {
+    switch (state) {
+    case 0:
+	semantico_tbd();
+	return call_sm(FSM_TERMO_E, 1);
+
+    case 1:
+	if (t->type == TYPE_SYMBOL && t->value == operator_pos("||")) {
+	    semantico_tbd();
+	    return 2;
+	}
+
+    case 2:
+	semantico_tbd();
+	return call_sm(FSM_EXPRESSAO, 3);
+
+    case 3:
+	return pop();
+
+    }
     return -1;
 }
 
