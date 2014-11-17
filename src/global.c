@@ -31,7 +31,7 @@ const char * const keywords[] = {
     "if", "else", "while", "then", "do", "end", "ret",
     "int", "float", "bool", "char",
     "mod",
-    "true", "false"
+    "true", "false",
     "print"
 };
 size_t size_keywords = (sizeof(keywords) / sizeof(char*));

@@ -22,8 +22,6 @@ retorno = "ret" expressao";".
 
 tipo = "int" | "float" | "bool" | "char".
 
-identificador = letra | letra_digito.
-
 expressao = termo_e ["||" expressao].
 
 termo_e = termo_igualdade ["&&" termo_e].

@@ -49,13 +49,13 @@ void (*const action_table [NUM_STATES][NUM_ENTRIES]) (void) = {
 
 
 // auxiliar functions
-inline int is_digit(char c) {
+int is_digit(char c) {
     return c >= '0' && c <= '9';
 }
-inline int is_alpha(char c) {
+int is_alpha(char c) {
     return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
 }
-inline char * is_specialc(char c) {
+char * is_specialc(char c) {
     return strchr(",;'+-*/<>=!()&|", c);
 }
 
