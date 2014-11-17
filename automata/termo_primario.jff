@@ -3,33 +3,90 @@
 	<automaton>
 		<!--The list of states.-->
 		<state id="0" name="q0">
-			<x>47.0</x>
-			<y>45.0</y>
+			<x>51.0</x>
+			<y>148.0</y>
 			<initial/>
 		</state>
 		<state id="1" name="q1">
-			<x>281.0</x>
-			<y>48.0</y>
+			<x>141.0</x>
+			<y>264.0</y>
 			<final/>
 		</state>
 		<state id="2" name="q2">
-			<x>33.0</x>
-			<y>217.0</y>
+			<x>491.0</x>
+			<y>149.0</y>
+			<final/>
 		</state>
 		<state id="3" name="q3">
-			<x>290.0</x>
-			<y>221.0</y>
+			<x>188.0</x>
+			<y>54.0</y>
+		</state>
+		<state id="4" name="q4">
+			<x>368.0</x>
+			<y>265.0</y>
+		</state>
+		<state id="5" name="q5">
+			<x>385.0</x>
+			<y>56.0</y>
+		</state>
+		<state id="6" name="q6">
+			<x>487.0</x>
+			<y>359.0</y>
+		</state>
+		<state id="7" name="q7">
+			<x>226.0</x>
+			<y>360.0</y>
 		</state>
 		<!--The list of transitions.-->
 		<transition>
+			<from>5</from>
+			<to>2</to>
+			<read>")"</read>
+		</transition>
+		<transition>
 			<from>0</from>
 			<to>2</to>
+			<read>constante_booleano</read>
+		</transition>
+		<transition>
+			<from>1</from>
+			<to>4</to>
 			<read>"("</read>
 		</transition>
 		<transition>
 			<from>0</from>
-			<to>1</to>
-			<read>constante</read>
+			<to>3</to>
+			<read>"("</read>
+		</transition>
+		<transition>
+			<from>6</from>
+			<to>7</to>
+			<read>","</read>
+		</transition>
+		<transition>
+			<from>4</from>
+			<to>6</to>
+			<read>expressao</read>
+		</transition>
+		<transition>
+			<from>6</from>
+			<to>2</to>
+			<read>")"</read>
+		</transition>
+		<transition>
+			<from>0</from>
+			<to>2</to>
+			<read>constante_caractere</read>
+		</transition>
+		<transition>
+			<from>3</from>
+			<to>5</to>
+			<read>expressao</read>
+		</transition>
+		<transition>
+			<from>0</from>
+			<to>2</to>
+			<read>constante_numero</read>
 		</transition>
 		<transition>
 			<from>0</from>
@@ -37,18 +94,13 @@
 			<read>identificador</read>
 		</transition>
 		<transition>
-			<from>0</from>
-			<to>1</to>
-			<read>chamada_funcao</read>
-		</transition>
-		<transition>
-			<from>2</from>
-			<to>3</to>
+			<from>7</from>
+			<to>6</to>
 			<read>expressao</read>
 		</transition>
 		<transition>
-			<from>3</from>
-			<to>1</to>
+			<from>4</from>
+			<to>2</to>
 			<read>")"</read>
 		</transition>
 	</automaton>

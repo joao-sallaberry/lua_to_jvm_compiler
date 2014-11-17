@@ -4,11 +4,9 @@ programa_principal = "int" "main" "(" ")" {instrucao} "end".
 
 declaracao_externa = declaracao_funcao | declaracao_variavel
 
-declaracao_funcao = tipo identificador "("parametros")" {instrucao} "end".
+declaracao_funcao = tipo identificador "(" [declaracao_variavel {"," declaracao_variavel}] ")" {instrucao} "end".
 
 declaracao_variavel = tipo identificador ["=" expressao]";".
-
-parametros = {declaracao_variavel","} declaracao_variavel.
 
 instrucao = declaracao_variavel | atribuicao | retorno | laco | condicional | expressao";".
 
@@ -26,7 +24,7 @@ tipo = "int" | "float" | "bool" | "char".
 
 identificador = letra | letra_digito.
 
-expressao = termo_e ["||" termo_ou].
+expressao = termo_e ["||" expressao].
 
 termo_e = termo_igualdade ["&&" termo_e].
 
@@ -38,10 +36,6 @@ termo_aditivo = termo_multiplicativo ["+" termo_aditivo] | termo_multiplicativo 
 
 termo_multiplicativo = termo_primario ["*" termo_multiplicativo] | termo_primario ["/" termo_multiplicativo] | termo_primario ["mod" termo_multiplicativo].
 
-termo_primario = identificador | constante | identificador"("argurmentos")" | "("expressao")".
-
-argumentos = {expressao ","} expressao | "ε".
+termo_primario = identificador | constante_numero | constante_caractere | constante_booleano | identificador "(" [{expressao ","} expressao] ")" | "(" expressao ")".
 
 imprimir = "print" expressao ";".
-
-constante = constante_numero | constante_caractere | constante_booleano.

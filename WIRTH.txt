@@ -8,7 +8,7 @@ declaracao_funcao = tipo identificador "("parametros")" {instrucao} "end".
 
 declaracao_variavel = tipo identificador ["=" expressao]";".
 
-parametros = {declaracao_variavel","} declaracao_variavel.
+parametros = {declaracao_variavel ","} declaracao_variavel | ε.
 
 instrucao = declaracao_variavel | atribuicao | retorno | laco | condicional | expressao";".
 
@@ -44,7 +44,7 @@ termo_primario = identificador | constante | chamada_funcao | "("expressao")".
 
 chamada_funcao = identificador"("argurmentos")".
 
-argumentos = {expressao ","} expressao | "ε".
+argumentos = {expressao ","} expressao | ε.
 
 imprimir = "print" expressao ";".
 
