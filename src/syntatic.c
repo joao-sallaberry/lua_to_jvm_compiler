@@ -12,6 +12,7 @@
 typedef enum{FSM_DECLARACAO_VARIAVEL,
 	     FSM_ATRIBUICAO,
 	     FSM_EXPRESSAO,
+	     FSM_TERMO_E,
 	     FSM_TIPO,
 	     NUM_FSM
 } sub_machine_t; 
@@ -19,12 +20,14 @@ typedef enum{FSM_DECLARACAO_VARIAVEL,
 int fsm_declaracao_variavel(token_t * t);
 int fsm_atribuicao(token_t * t);
 int fsm_expressao(token_t * t);
+int fsm_termo_e(token_t * t);
 int fsm_tipo(token_t * t);
 
 int (*const sub_machines[NUM_FSM]) (token_t * ) = {
     fsm_declaracao_variavel,
     fsm_atribuicao,
     fsm_expressao,
+    fsm_termo_e,
     fsm_tipo
 };
 
@@ -47,7 +50,7 @@ token_t *get_token_cond(FILE * f) {
 
     if (get_token_flag) {
 	t = get_next_token(f);
-	if (t) printf("token class=%d l=%2d c=%2d value=%d\n", t->type, t->line, t->column, t->int_value);
+	if (t) printf("token class=%d l=%2d c=%2d value=%d\n", t->type, t->line, t->column, t->value);
     }
     get_token_flag = 1;
 
@@ -196,6 +199,10 @@ int fsm_expressao(token_t * t) {
 	return pop();
 
     }
+    return -1;
+}
+
+int fsm_termo_e(token_t * t) {
     return -1;
 }
 
