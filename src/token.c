@@ -15,7 +15,7 @@ token_t *get_token_list() {
 token_t *create_token(token_type_t type) {
     token_t *t = malloc(sizeof(token_t));
     t->type = type;
-    t->int_value = 0;
+    t->value = 0;
     t->next = NULL;
     
     if (!token_list)
@@ -29,13 +29,13 @@ token_t *create_token(token_type_t type) {
 
 token_t *add_int_token(int i) {
     token_t *t = create_token(TYPE_NUMBER);
-    t->int_value = i;
+    t->value = i;
     return t;
 }
 
 token_t *add_float_token(float f) {
     token_t *t = create_token(TYPE_FLOAT);
-    t->int_value = search_insert_float(f);
+    t->value = search_insert_float(f);
     return t;
 }
 
@@ -44,12 +44,12 @@ token_t *add_alphanum_token(char* value) {
     for (int i = 0; i < size_keywords; i++)
 	if (!strcmp(value, keywords[i])) {
 	    t = create_token(TYPE_KEYWORD);
-	    t->int_value = i;
+	    t->value = i;
 	    return t;
 	}
     if (!t) {
 	t = create_token(TYPE_IDENTIFIER);
-	t->int_value = search_insert_sym(value);
+	t->value = search_insert_sym(value);
     }
     return t;
 }
@@ -58,7 +58,7 @@ token_t *add_operator_token(char* sym) {
     token_t *t = create_token(TYPE_SYMBOL);
     for (int i = 0; ; i++)
 	if (!strcmp(sym, operators[i])) {
-	    t->int_value = i;
+	    t->value = i;
 	    return t;
 	}
 }

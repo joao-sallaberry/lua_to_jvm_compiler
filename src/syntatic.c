@@ -7,15 +7,21 @@
 
 
 typedef enum{FSM_DECLARACAO_VARIAVEL,
+	     FSM_ATRIBUICAO,
+	     FSM_EXPRESSAO,
 	     FSM_TIPO,
 	     NUM_FSM
 } sub_machine_t; 
 
 int fsm_declaracao_variavel(token_t * t);
+int fsm_atribuicao(token_t * t);
+int fsm_expressao(token_t * t);
 int fsm_tipo(token_t * t);
 
 int (*const sub_machines[NUM_FSM]) (token_t * ) = {
     fsm_declaracao_variavel,
+    fsm_atribuicao,
+    fsm_expressao,
     fsm_tipo
 };
 
@@ -41,7 +47,7 @@ int analyse(FILE * f) {
 
     printf("--- TOKENS ---\n");
     while (t = get_next_token(f)) {
-	printf("class=%d l=%2d c=%2d value=%d\n", t->type, t->line, t->column, t->int_value);
+	printf("class=%d l=%2d c=%2d value=%d\n", t->type, t->line, t->column, t->value);
 	state = sub_machines[sub_machine](t);
     }
     printf("\n");
@@ -101,7 +107,7 @@ int fsm_declaracao_variavel(token_t * t) { //TODO: unfinished
 	break;
 
     case 2:
-	if (t->type == TYPE_SYMBOL && t->int_value == operator_pos(";")) {
+	if (t->type == TYPE_SYMBOL && t->value == operator_pos(";")) {
 	    semantico_tbd();
 	    return 3;
 	}
@@ -114,14 +120,52 @@ int fsm_declaracao_variavel(token_t * t) { //TODO: unfinished
     return -1;
 }
 
+int fsm_atribuicao(token_t * t) {
+    switch (state) {
+    case 0:
+	if (t->type == TYPE_IDENTIFIER) {
+	    semantico_tbd();
+	    return 1;
+	}
+	break;
+
+    case 1:
+	if (t->type == TYPE_SYMBOL && t->value == operator_pos("=")) {
+	    semantico_tbd();
+	    return 2;
+	}
+	break;
+
+    case 2:
+	semantico_tbd();
+	return call_sm(FSM_EXPRESSAO, 3);
+
+    case 3:
+	if (t->type == TYPE_SYMBOL && t->value == operator_pos(";")) {
+	    semantico_tbd();
+	    return 4;
+	}
+	break;
+
+    case 4:
+	return pop();
+
+    }
+    return -1;
+}
+
+int fsm_expressao(token_t * t) {
+    return -1;
+}
+
 int fsm_tipo(token_t * t) {
     switch (state) {
     case 0:
 	if (t->type == TYPE_KEYWORD && (
-		    t->int_value == keyword_pos("int") ||
-		    t->int_value == keyword_pos("float") ||
-	            t->int_value == keyword_pos("bool") ||
-	            t->int_value == keyword_pos("char"))) {
+		    t->value == keyword_pos("int") ||
+		    t->value == keyword_pos("float") ||
+	            t->value == keyword_pos("bool") ||
+	            t->value == keyword_pos("char"))) {
 	    semantico_tbd();
 	    return 1;
 	}
