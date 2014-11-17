@@ -3,54 +3,145 @@
 	<automaton>
 		<!--The list of states.-->
 		<state id="0" name="q0">
-			<x>20.0</x>
-			<y>72.0</y>
+			<x>27.0</x>
+			<y>187.0</y>
 			<initial/>
 		</state>
 		<state id="1" name="q1">
-			<x>423.0</x>
-			<y>66.0</y>
-			<final/>
+			<x>296.0</x>
+			<y>195.0</y>
 		</state>
 		<state id="2" name="q2">
-			<x>205.0</x>
-			<y>228.0</y>
+			<x>292.0</x>
+			<y>103.0</y>
+		</state>
+		<state id="3" name="q3">
+			<x>295.0</x>
+			<y>272.0</y>
+		</state>
+		<state id="4" name="q4">
+			<x>287.0</x>
+			<y>31.0</y>
+		</state>
+		<state id="5" name="q5">
+			<x>27.0</x>
+			<y>347.0</y>
+		</state>
+		<state id="6" name="q6">
+			<x>586.0</x>
+			<y>135.0</y>
+			<final/>
+		</state>
+		<state id="7" name="q7">
+			<x>293.0</x>
+			<y>347.0</y>
+		</state>
+		<state id="8" name="q8">
+			<x>92.0</x>
+			<y>499.0</y>
+		</state>
+		<state id="9" name="q9">
+			<x>377.0</x>
+			<y>499.0</y>
+		</state>
+		<state id="10" name="q10">
+			<x>587.0</x>
+			<y>344.0</y>
+		</state>
+		<state id="11" name="q11">
+			<x>581.0</x>
+			<y>497.0</y>
 		</state>
 		<!--The list of transitions.-->
 		<transition>
-			<from>0</from>
-			<to>1</to>
-			<read>retorno</read>
+			<from>5</from>
+			<to>8</to>
+			<read>"("</read>
 		</transition>
 		<transition>
 			<from>0</from>
 			<to>1</to>
-			<read>laco</read>
+			<read>tipo</read>
 		</transition>
 		<transition>
 			<from>0</from>
-			<to>1</to>
-			<read>atribuicao</read>
+			<to>3</to>
+			<read>"while"</read>
 		</transition>
 		<transition>
 			<from>0</from>
-			<to>1</to>
+			<to>5</to>
+			<read>identificador</read>
+		</transition>
+		<transition>
+			<from>4</from>
+			<to>6</to>
 			<read>condicional</read>
 		</transition>
 		<transition>
-			<from>2</from>
-			<to>1</to>
-			<read>";"</read>
+			<from>3</from>
+			<to>6</to>
+			<read>laco</read>
 		</transition>
 		<transition>
-			<from>0</from>
-			<to>1</to>
-			<read>declaracao_variavel</read>
+			<from>9</from>
+			<to>11</to>
+			<read>","</read>
+		</transition>
+		<transition>
+			<from>5</from>
+			<to>7</to>
+			<read>"="</read>
 		</transition>
 		<transition>
 			<from>0</from>
 			<to>2</to>
+			<read>"ret"</read>
+		</transition>
+		<transition>
+			<from>1</from>
+			<to>6</to>
+			<read>declaracao_var_com_atrib</read>
+		</transition>
+		<transition>
+			<from>9</from>
+			<to>10</to>
+			<read>")"</read>
+		</transition>
+		<transition>
+			<from>0</from>
+			<to>4</to>
+			<read>"if"</read>
+		</transition>
+		<transition>
+			<from>8</from>
+			<to>9</to>
 			<read>expressao</read>
+		</transition>
+		<transition>
+			<from>10</from>
+			<to>6</to>
+			<read>";"</read>
+		</transition>
+		<transition>
+			<from>8</from>
+			<to>10</to>
+			<read>")"</read>
+		</transition>
+		<transition>
+			<from>11</from>
+			<to>9</to>
+			<read>expressao</read>
+		</transition>
+		<transition>
+			<from>7</from>
+			<to>10</to>
+			<read>expressao</read>
+		</transition>
+		<transition>
+			<from>2</from>
+			<to>6</to>
+			<read>retorno</read>
 		</transition>
 	</automaton>
 </structure>

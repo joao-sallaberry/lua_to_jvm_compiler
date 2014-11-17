@@ -3,25 +3,35 @@
 	<automaton>
 		<!--The list of states.-->
 		<state id="0" name="q0">
-			<x>20.0</x>
-			<y>20.0</y>
+			<x>14.0</x>
+			<y>34.0</y>
 			<initial/>
 		</state>
 		<state id="1" name="q1">
-			<x>445.0</x>
-			<y>280.0</y>
+			<x>301.0</x>
+			<y>34.0</y>
 			<final/>
 		</state>
 		<!--The list of transitions.-->
 		<transition>
-			<from>0</from>
-			<to>0</to>
-			<read>declaracao_externa</read>
+			<from>1</from>
+			<to>1</to>
+			<read>declaracao_variavel</read>
 		</transition>
 		<transition>
 			<from>0</from>
 			<to>1</to>
-			<read>programa_principal</read>
+			<read>declaracao_variavel</read>
+		</transition>
+		<transition>
+			<from>0</from>
+			<to>1</to>
+			<read>declaracao_funcao</read>
+		</transition>
+		<transition>
+			<from>1</from>
+			<to>1</to>
+			<read>declaracao_funcao</read>
 		</transition>
 	</automaton>
 </structure>

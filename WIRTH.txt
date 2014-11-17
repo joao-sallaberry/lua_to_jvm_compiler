@@ -1,18 +1,16 @@
-programa = {declaracao_externa} programa_principal.
+programa = {declaracao_funcao | declaracao_var_com_atrib}.
 
-programa_principal = "int" "main" "(" ")" {instrucao} "end".
+declaracao_funcao = tipo identificador "(" parametros ")" {instrucao} "end".
 
-declaracao_externa = declaracao_funcao | declaracao_variavel
+declaracao_variavel = tipo identificador ";".
 
-declaracao_funcao = tipo identificador "("parametros")" {instrucao} "end".
-
-declaracao_variavel = tipo identificador ["=" expressao]";".
+declaracao_var_com_atrib = tipo identificador ["=" expressao] ";".
 
 parametros = {declaracao_variavel ","} declaracao_variavel | ε.
 
-instrucao = declaracao_variavel | atribuicao | retorno | laco | condicional | expressao";".
+instrucao = declaracao_var_com_atrib | retorno | laco | condicional | atribuicao | chamada_funcao ";".
 
-atribuicao = identificador "=" expressao";".
+atribuicao = identificador "=" expressao ";".
 
 laco = "while" expressao "do" {instrucao} "end".
 
@@ -42,7 +40,7 @@ termo_multiplicativo = termo_primario ["*" termo_multiplicativo] | termo_primari
 
 termo_primario = identificador | constante | chamada_funcao | "("expressao")".
 
-chamada_funcao = identificador"("argurmentos")".
+chamada_funcao = identificador "(" argurmentos ")".
 
 argumentos = {expressao ","} expressao | ε.
 
@@ -52,7 +50,7 @@ constante = constante_numero | constante_caractere | constante_booleano.
 
 constante_numero = inteiro | real.
 
-constante_caractere = "'"letra_digito"'".
+constante_caractere = "'" letra_digito "'".
 
 constante_booleano = "true" | "false".
 
@@ -64,7 +62,7 @@ letra =
 
 inteiro = digito {digito}.
 
-real = inteiro"." | inteiro"."inteiro | "."inteiro.
+real = inteiro "." | inteiro "." inteiro | "." inteiro.
 
 digito = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9".
 

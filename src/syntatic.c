@@ -6,11 +6,15 @@
 #include <stdlib.h>
 
 
-#define MAIN_MACHINE    FSM_ATRIBUICAO
-#define MAIN_FINAL_ST   4
+#define MAIN_MACHINE    FSM_INSTRUCAO
+#define MAIN_FINAL_ST   6
 
 typedef enum{FSM_DECLARACAO_VARIAVEL,
-	     FSM_ATRIBUICAO,
+	     FSM_DECLARACAO_VAR_COM_ATRIB,
+	     FSM_INSTRUCAO,
+	     FSM_LACO,
+	     FSM_CONDICIONAL,
+	     FSM_CONDICIONAL_NEGADO,
 	     FSM_EXPRESSAO,
 	     FSM_TERMO_E,
 	     FSM_TERMO_IGUALDADE,
@@ -24,7 +28,11 @@ typedef enum{FSM_DECLARACAO_VARIAVEL,
 } sub_machine_t; 
 
 int fsm_declaracao_variavel(token_t * t);
-int fsm_atribuicao(token_t * t);
+int fsm_declaracao_var_com_atrib(token_t * t);
+int fsm_instrucao(token_t * t);
+int fsm_laco(token_t * t);
+int fsm_condicional(token_t * t);
+int fsm_condicional_negado(token_t * t);
 int fsm_expressao(token_t * t);
 int fsm_termo_e(token_t * t);
 int fsm_termo_igualdade(token_t * t);
@@ -37,7 +45,11 @@ int fsm_tipo(token_t * t);
 
 int (*const sub_machines[NUM_FSM]) (token_t * ) = {
     fsm_declaracao_variavel,
-    fsm_atribuicao,
+    fsm_declaracao_var_com_atrib,
+    fsm_instrucao,
+    fsm_laco,
+    fsm_condicional,
+    fsm_condicional_negado,
     fsm_expressao,
     fsm_termo_e,
     fsm_termo_igualdade,
@@ -141,7 +153,7 @@ void semantico_tbd() {
            SUB-MACHINES
 
 ***********************************/
-int fsm_declaracao_variavel(token_t * t) { //TODO: unfinished
+int fsm_declaracao_variavel(token_t * t) {
     switch (state) {
     case 0:
 	semantico_tbd();
@@ -168,7 +180,7 @@ int fsm_declaracao_variavel(token_t * t) { //TODO: unfinished
     return -1;
 }
 
-int fsm_atribuicao(token_t * t) {
+int fsm_declaracao_var_com_atrib(token_t * t) { //TODO unfinished
     switch (state) {
     case 0:
 	if (t->type == TYPE_IDENTIFIER) {
@@ -177,28 +189,132 @@ int fsm_atribuicao(token_t * t) {
 	}
 	break;
 
-    case 1:
-	if (t->type == TYPE_SYMBOL && t->value == operator_pos("=")) {
+    case 2:
+	if (t->type == TYPE_SYMBOL && t->value == operator_pos(";")) {
+	    semantico_tbd();
+	    return 3;
+	}
+	break;
+
+    case 3:
+	return pop();
+	
+    }
+    return -1;
+}
+
+int fsm_instrucao(token_t * t) {
+    switch (state) {
+    case 0:
+	if (t->type == TYPE_KEYWORD && (
+		    t->value == keyword_pos("int") ||
+		    t->value == keyword_pos("float") ||
+	            t->value == keyword_pos("bool") ||
+	            t->value == keyword_pos("char"))) {
+	    semantico_tbd();
+	    return 1;
+	}
+	else if (t->type == TYPE_KEYWORD && t->value == keyword_pos("ret")) {
 	    semantico_tbd();
 	    return 2;
 	}
-	break;
-
-    case 2:
-	semantico_tbd();
-	return call_sm(FSM_EXPRESSAO, 3);
-
-    case 3:
-	if (t->type == TYPE_SYMBOL && t->value == operator_pos(";")) {
+	else if (t->type == TYPE_KEYWORD && t->value == keyword_pos("while")) {
+	    semantico_tbd();
+	    return 3;
+	}
+	else if (t->type == TYPE_KEYWORD && t->value == keyword_pos("if")) {
 	    semantico_tbd();
 	    return 4;
 	}
+	else if (t->type == TYPE_IDENTIFIER) {
+	    semantico_tbd();
+	    return 5;
+	}
 	break;
+
+    case 1:
+	semantico_tbd();
+	return call_sm(FSM_DECLARACAO_VAR_COM_ATRIB, 6);
+
+    case 2:
+	semantico_tbd();
+	return call_sm(FSM_RETORNO, 6);
+
+    case 3:
+	semantico_tbd();
+	return call_sm(FSM_LACO, 6);
 
     case 4:
 	semantico_tbd();
+	return call_sm(FSM_CONDICIONAL, 6);
+	
+    case 5:
+	if (t->type == TYPE_SYMBOL && t->value == operator_pos("=")) {
+	    semantico_tbd();
+	    return 7;
+	}
+	else if (t->type == TYPE_SYMBOL && t->value == operator_pos("(")) {
+	    semantico_tbd();
+	    return 8;
+	}
+	break;
+
+    case 6:
+	semantico_tbd();
 	return pop();
 
+    case 7:
+	semantico_tbd();
+	return call_sm(FSM_EXPRESSAO, 10);
+
+    case 8:
+	if (t->type == TYPE_SYMBOL && t->value == operator_pos(")")) {
+	    semantico_tbd();
+	    return 10;
+	}
+	semantico_tbd();
+	return call_sm(FSM_EXPRESSAO, 9);
+
+    case 9:
+	if (t->type == TYPE_SYMBOL && t->value == operator_pos(",")) {
+	    semantico_tbd();
+	    return 11;
+	}
+	else if (t->type == TYPE_SYMBOL && t->value == operator_pos(")")) {
+	    semantico_tbd();
+	    return 10;
+	}
+	break;
+
+    case 10:
+	if (t->type == TYPE_SYMBOL && t->value == operator_pos(";")) {
+	    semantico_tbd();
+	    return 6;
+	}
+	break;
+
+    case 11:
+	semantico_tbd();
+	return call_sm(FSM_EXPRESSAO, 9);
+
+    }
+    return -1;
+}
+
+int fsm_laco(token_t * t) {
+    switch (state) {
+    }
+    return -1;
+}
+
+int fsm_condicional(token_t * t) {
+    switch (state) {
+    }
+    return -1;
+}
+
+int fsm_condicional_negado(token_t * t) {
+    switch (state) {
     }
     return -1;
 }
@@ -432,24 +548,17 @@ int fsm_termo_primario(token_t * t) {
 int fsm_retorno(token_t * t) {
     switch (state) {
     case 0:
-	if (t->type == TYPE_KEYWORD && t->value == keyword_pos("ret")) {
-	    semantico_tbd();
-	    return 1;
-	}
-	break;
+	semantico_tbd();
+	return call_sm(FSM_EXPRESSAO, 1);
 
     case 1:
-	semantico_tbd();
-	return call_sm(FSM_EXPRESSAO, 2);
-
-    case 2:
 	if (t->type == TYPE_SYMBOL && t->value == operator_pos(";")) {
 	    semantico_tbd();
-	    return 3;
+	    return 2;
 	}
 	break;
 
-    case 3:
+    case 2:
 	semantico_tbd();
 	return pop();
     }
