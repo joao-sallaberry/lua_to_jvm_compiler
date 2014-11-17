@@ -19,6 +19,7 @@ typedef enum{FSM_DECLARACAO_VARIAVEL,
 	     FSM_TERMO_MULTIPLICATIVO,
 	     FSM_TERMO_PRIMARIO,
 	     FSM_TIPO,
+	     FSM_RETORNO,
 	     NUM_FSM
 } sub_machine_t; 
 
@@ -31,6 +32,7 @@ int fsm_termo_relacional(token_t * t);
 int fsm_termo_aditivo(token_t * t);
 int fsm_termo_multiplicativo(token_t * t);
 int fsm_termo_primario(token_t * t);
+int fsm_retorno(token_t * t);
 int fsm_tipo(token_t * t);
 
 int (*const sub_machines[NUM_FSM]) (token_t * ) = {
@@ -43,6 +45,7 @@ int (*const sub_machines[NUM_FSM]) (token_t * ) = {
     fsm_termo_aditivo,
     fsm_termo_multiplicativo,
     fsm_termo_primario,
+    fsm_retorno,
     fsm_tipo
 };
 
@@ -423,6 +426,34 @@ int fsm_termo_primario(token_t * t) {
 	return call_sm(FSM_EXPRESSAO, 6);
 	
     }
+    return -1;
+}
+
+int fsm_retorno(token_t * t) {
+    switch (state) {
+    case 0:
+	if (t->type == TYPE_KEYWORD && t->value == keyword_pos("ret")) {
+	    semantico_tbd();
+	    return 1;
+	}
+	break;
+
+    case 1:
+	semantico_tbd();
+	return call_sm(FSM_EXPRESSAO, 2);
+
+    case 2:
+	if (t->type == TYPE_SYMBOL && t->value == operator_pos(";")) {
+	    semantico_tbd();
+	    return 3;
+	}
+	break;
+
+    case 3:
+	semantico_tbd();
+	return pop();
+    }
+       
     return -1;
 }
 

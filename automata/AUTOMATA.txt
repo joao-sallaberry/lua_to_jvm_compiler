@@ -18,7 +18,7 @@ condicional = "if" expressao "then" {instrucao} condicional_negado.
 
 condicional_negado = ["else" {instrucao}] "end".
 
-retorno = "ret" expressao";".
+retorno = "ret" expressao ";".
 
 tipo = "int" | "float" | "bool" | "char".
 
