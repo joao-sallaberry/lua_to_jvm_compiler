@@ -24,9 +24,9 @@ identificador = letra | letra_digito.
 
 expressao = termo_ou.
 
-termo_ou = termo_e ["||" termo_ou].
+termo_ou = termo_e ["|" termo_ou].
 
-termo_e = termo_igualdade ["&&" termo_e].
+termo_e = termo_igualdade ["&" termo_e].
 
 termo_igualdade = termo_relacional ["==" termo_igualdade] | termo_relacional ["!=" termo_igualdade].
 
