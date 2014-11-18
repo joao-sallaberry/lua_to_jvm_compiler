@@ -3,38 +3,52 @@
 	<automaton>
 		<!--The list of states.-->
 		<state id="0" name="q0">
-			<x>34.0</x>
-			<y>26.0</y>
+			<x>45.0</x>
+			<y>38.0</y>
 			<initial/>
 		</state>
 		<state id="1" name="q1">
-			<x>280.0</x>
-			<y>26.0</y>
+			<x>277.0</x>
+			<y>40.0</y>
 		</state>
 		<state id="2" name="q2">
-			<x>22.0</x>
-			<y>176.0</y>
+			<x>271.0</x>
+			<y>189.0</y>
 		</state>
 		<state id="3" name="q3">
-			<x>274.0</x>
-			<y>177.0</y>
+			<x>459.0</x>
+			<y>40.0</y>
 			<final/>
+		</state>
+		<state id="4" name="q4">
+			<x>458.0</x>
+			<y>189.0</y>
 		</state>
 		<!--The list of transitions.-->
 		<transition>
 			<from>1</from>
 			<to>2</to>
-			<read>identificador</read>
+			<read>"="</read>
+		</transition>
+		<transition>
+			<from>1</from>
+			<to>3</to>
+			<read>";"</read>
+		</transition>
+		<transition>
+			<from>2</from>
+			<to>4</to>
+			<read>expressao</read>
+		</transition>
+		<transition>
+			<from>4</from>
+			<to>3</to>
+			<read>";"</read>
 		</transition>
 		<transition>
 			<from>0</from>
 			<to>1</to>
-			<read>tipo</read>
-		</transition>
-		<transition>
-			<from>2</from>
-			<to>3</to>
-			<read>";"</read>
+			<read>identificador</read>
 		</transition>
 	</automaton>
 </structure>

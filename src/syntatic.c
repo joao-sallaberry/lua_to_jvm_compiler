@@ -177,7 +177,7 @@ int fsm_declaracao_variavel(token_t * t) {
     return -1;
 }
 
-int fsm_declaracao_var_com_atrib(token_t * t) { //TODO unfinished
+int fsm_declaracao_var_com_atrib(token_t * t) {
     switch (state) {
     case 0:
 	if (t->type == TYPE_IDENTIFIER) {
@@ -186,16 +186,30 @@ int fsm_declaracao_var_com_atrib(token_t * t) { //TODO unfinished
 	}
 	break;
 
-    case 2:
-	if (t->type == TYPE_SYMBOL && t->value == operator_pos(";")) {
+    case 1:
+	if (t->type == TYPE_SYMBOL && t->value == operator_pos("=")) {
+	    semantico_tbd();
+	    return 2;
+	}
+	else if (t->type == TYPE_SYMBOL && t->value == operator_pos(";")) {
 	    semantico_tbd();
 	    return 3;
 	}
 	break;
 
+    case 2:
+	semantico_tbd();
+	return call_sm(FSM_EXPRESSAO, 4);
+
     case 3:
+	semantico_tbd();
 	return pop();
 	
+    case 4:
+	if (t->type == TYPE_SYMBOL && t->value == operator_pos(";")) {
+	    semantico_tbd();
+	    return 3;
+	}
     }
     return -1;
 }
