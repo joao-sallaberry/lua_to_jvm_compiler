@@ -6,8 +6,8 @@
 #include <stdlib.h>
 
 
-#define MAIN_MACHINE    FSM_INSTRUCAO
-#define MAIN_FINAL_ST   6
+#define MAIN_MACHINE    FSM_IMPRIMIR
+#define MAIN_FINAL_ST   3
 
 typedef enum{FSM_PROGRAMA,
 	     FSM_DELCARACAO_FUNCAO,
@@ -24,6 +24,7 @@ typedef enum{FSM_PROGRAMA,
 	     FSM_TERMO_MULTIPLICATIVO,
 	     FSM_TERMO_PRIMARIO,
 	     FSM_RETORNO,
+	     FSM_IMPRIMIR,
 	     NUM_FSM
 } sub_machine_t; 
 
@@ -42,6 +43,7 @@ int fsm_termo_aditivo(token_t * t);
 int fsm_termo_multiplicativo(token_t * t);
 int fsm_termo_primario(token_t * t);
 int fsm_retorno(token_t * t);
+int fsm_imprimir(token_t * t);
 
 int (*const sub_machines[NUM_FSM]) (token_t * ) = {
     fsm_programa,
@@ -59,6 +61,7 @@ int (*const sub_machines[NUM_FSM]) (token_t * ) = {
     fsm_termo_multiplicativo,
     fsm_termo_primario,
     fsm_retorno,
+	fsm_imprimir
 };
 
 
@@ -708,4 +711,28 @@ int fsm_retorno(token_t * t) {
     }
        
     return -1;
+}
+
+int fsm_imprimir(token_t * t){
+	switch(state){
+	case 0:
+		if(t->type == TYPE_KEYWORD && t->value == keyword_pos("print")){
+		semantico_tbd();
+		return 1;
+		}
+		break;			
+	case 1:
+		semantico_tbd();
+		return call_sm(FSM_EXPRESSAO, 2);
+	case 2:
+		if(t->type == TYPE_SYMBOL && t->value == operator_pos(";")){
+			semantico_tbd();
+			return 3;
+		}
+		break;
+	case 3:
+		semantico_tbd();
+		return pop();
+	}
+	return -1;
 }
