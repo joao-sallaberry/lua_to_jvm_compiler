@@ -91,9 +91,8 @@ token_t *get_token_cond(FILE * f) {
 int analyse(FILE * f) {
     token_t *t;
 
-    sub_machine_t main_machine = sub_machine = MAIN_MACHINE;
-    int final_state = MAIN_FINAL_ST;
-    state = 0;
+   sub_machine = MAIN_MACHINE;
+   state = 0;
 
     printf("--- syntax check ---\n");
     while ((t = get_token_cond(f))) {
@@ -102,7 +101,7 @@ int analyse(FILE * f) {
     }
     printf("\n");
     
-    if (sub_machine == main_machine && state == final_state)
+    if (sub_machine == MAIN_MACHINE && state == MAIN_FINAL_ST)
 	return 0;
     else
 	return -1;
