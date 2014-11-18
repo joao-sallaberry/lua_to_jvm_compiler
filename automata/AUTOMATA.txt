@@ -10,9 +10,7 @@ instrucao = tipo declaracao_var_com_atrib | "ret" retorno | "while" laco | "if" 
 
 laco = expressao "do" {instrucao} "end".
 
-condicional = expressao "then" {instrucao} condicional_negado.
-
-condicional_negado = ["else" {instrucao}] "end".
+condicional = expressao "then" {instrucao} ["else" {instrucao}] "end".
 
 retorno = expressao ";".
 

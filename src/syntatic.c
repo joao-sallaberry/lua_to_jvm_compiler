@@ -14,7 +14,6 @@ typedef enum{FSM_DECLARACAO_VARIAVEL,
 	     FSM_INSTRUCAO,
 	     FSM_LACO,
 	     FSM_CONDICIONAL,
-	     FSM_CONDICIONAL_NEGADO,
 	     FSM_EXPRESSAO,
 	     FSM_TERMO_E,
 	     FSM_TERMO_IGUALDADE,
@@ -32,7 +31,6 @@ int fsm_declaracao_var_com_atrib(token_t * t);
 int fsm_instrucao(token_t * t);
 int fsm_laco(token_t * t);
 int fsm_condicional(token_t * t);
-int fsm_condicional_negado(token_t * t);
 int fsm_expressao(token_t * t);
 int fsm_termo_e(token_t * t);
 int fsm_termo_igualdade(token_t * t);
@@ -49,7 +47,6 @@ int (*const sub_machines[NUM_FSM]) (token_t * ) = {
     fsm_instrucao,
     fsm_laco,
     fsm_condicional,
-    fsm_condicional_negado,
     fsm_expressao,
     fsm_termo_e,
     fsm_termo_igualdade,
@@ -303,18 +300,70 @@ int fsm_instrucao(token_t * t) {
 
 int fsm_laco(token_t * t) {
     switch (state) {
+    case 0:
+	semantico_tbd();
+	return call_sm(FSM_EXPRESSAO, 1);
+
+    case 1:
+	if (t->type == TYPE_KEYWORD && t->value == keyword_pos("do")) {
+	    semantico_tbd();
+	    return 2;
+	}
+	break;
+
+    case 2:
+	if (t->type == TYPE_KEYWORD && t->value == keyword_pos("end")) {
+	    semantico_tbd();
+	    return 3;
+	}
+	semantico_tbd();
+	return call_sm(FSM_INSTRUCAO, 2);
+
+    case 3:
+	semantico_tbd();
+	return pop();
+
     }
     return -1;
 }
 
 int fsm_condicional(token_t * t) {
     switch (state) {
-    }
-    return -1;
-}
+    case 0:
+	semantico_tbd();
+	return call_sm(FSM_EXPRESSAO, 1);
 
-int fsm_condicional_negado(token_t * t) {
-    switch (state) {
+    case 1:
+	if (t->type == TYPE_KEYWORD && t->value == keyword_pos("then")) {
+	    semantico_tbd();
+	    return 2;
+	}
+	break;
+
+    case 2:
+	if (t->type == TYPE_KEYWORD && t->value == keyword_pos("end")) {
+	    semantico_tbd();
+	    return 4;
+	}
+	else if (t->type == TYPE_KEYWORD && t->value == keyword_pos("else")) {
+	    semantico_tbd();
+	    return 3;
+	}
+	semantico_tbd();
+	return call_sm(FSM_INSTRUCAO, 2);
+
+    case 3:
+	if (t->type == TYPE_KEYWORD && t->value == keyword_pos("end")) {
+	    semantico_tbd();
+	    return 4;
+	}
+	semantico_tbd();
+	return call_sm(FSM_INSTRUCAO, 2);
+
+    case 4:
+	semantico_tbd();
+	return pop();
+
     }
     return -1;
 }

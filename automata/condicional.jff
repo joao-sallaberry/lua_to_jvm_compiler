@@ -3,42 +3,37 @@
 	<automaton>
 		<!--The list of states.-->
 		<state id="0" name="q0">
-			<x>42.0</x>
-			<y>38.0</y>
+			<x>32.0</x>
+			<y>33.0</y>
 			<initial/>
 		</state>
 		<state id="1" name="q1">
-			<x>281.0</x>
-			<y>42.0</y>
+			<x>303.0</x>
+			<y>33.0</y>
 		</state>
 		<state id="2" name="q2">
 			<x>27.0</x>
-			<y>138.0</y>
+			<y>161.0</y>
 		</state>
 		<state id="3" name="q3">
-			<x>279.0</x>
-			<y>145.0</y>
+			<x>295.0</x>
+			<y>162.0</y>
 		</state>
 		<state id="4" name="q4">
-			<x>25.0</x>
-			<y>236.0</y>
+			<x>146.0</x>
+			<y>263.0</y>
 			<final/>
 		</state>
 		<!--The list of transitions.-->
 		<transition>
 			<from>2</from>
 			<to>3</to>
-			<read>"then"</read>
-		</transition>
-		<transition>
-			<from>0</from>
-			<to>1</to>
-			<read>"if"</read>
+			<read>"else"</read>
 		</transition>
 		<transition>
 			<from>3</from>
 			<to>4</to>
-			<read>condicional_negado</read>
+			<read>"end"</read>
 		</transition>
 		<transition>
 			<from>3</from>
@@ -46,9 +41,24 @@
 			<read>instrucao</read>
 		</transition>
 		<transition>
+			<from>2</from>
+			<to>2</to>
+			<read>instrucao</read>
+		</transition>
+		<transition>
+			<from>0</from>
+			<to>1</to>
+			<read>expressao</read>
+		</transition>
+		<transition>
 			<from>1</from>
 			<to>2</to>
-			<read>expressao</read>
+			<read>"then"</read>
+		</transition>
+		<transition>
+			<from>2</from>
+			<to>4</to>
+			<read>"end"</read>
 		</transition>
 	</automaton>
 </structure>
