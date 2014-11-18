@@ -3,25 +3,34 @@
 	<automaton>
 		<!--The list of states.-->
 		<state id="0" name="q0">
-			<x>14.0</x>
-			<y>34.0</y>
+			<x>49.0</x>
+			<y>35.0</y>
 			<initial/>
 		</state>
 		<state id="1" name="q1">
-			<x>301.0</x>
-			<y>34.0</y>
+			<x>294.0</x>
+			<y>35.0</y>
 			<final/>
+		</state>
+		<state id="2" name="q2">
+			<x>50.0</x>
+			<y>282.0</y>
 		</state>
 		<!--The list of transitions.-->
 		<transition>
 			<from>1</from>
-			<to>1</to>
-			<read>declaracao_variavel</read>
+			<to>2</to>
+			<read>tipo</read>
 		</transition>
 		<transition>
 			<from>0</from>
+			<to>2</to>
+			<read>tipo</read>
+		</transition>
+		<transition>
+			<from>2</from>
 			<to>1</to>
-			<read>declaracao_variavel</read>
+			<read>declaracao_var_com_atrib</read>
 		</transition>
 		<transition>
 			<from>0</from>
