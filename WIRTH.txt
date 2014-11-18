@@ -1,16 +1,14 @@
-programa = {declaracao_funcao | declaracao_var_com_atrib}.
+programa = {declaracao_funcao | declaracao_variavel ";"}.
 
 declaracao_funcao = tipo identificador "(" parametros ")" {instrucao} "end".
 
-declaracao_variavel = tipo identificador ";".
-
-declaracao_var_com_atrib = tipo identificador ["=" expressao] ";".
+declaracao_variavel = tipo identificador [ "[" [ expressao ] "]" ].
 
 parametros = {declaracao_variavel ","} declaracao_variavel | ε.
 
-instrucao = declaracao_var_com_atrib | retorno | laco | condicional | atribuicao | chamada_funcao ";".
+instrucao = declaracao_variavel ";" | retorno | laco | condicional | atribuicao | chamada_funcao ";".
 
-atribuicao = identificador "=" expressao ";".
+atribuicao = identificador [ "[" expressao "]" ] "=" expressao ";".
 
 laco = "while" expressao "do" {instrucao} "end".
 
@@ -43,8 +41,6 @@ termo_primario = identificador | constante | chamada_funcao | "("expressao")".
 chamada_funcao = identificador "(" argurmentos ")".
 
 argumentos = {expressao ","} expressao | ε.
-
-imprimir = "print" expressao ";".
 
 constante = constante_numero | constante_caractere | constante_booleano.
 
