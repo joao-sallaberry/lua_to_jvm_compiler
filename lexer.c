@@ -121,6 +121,7 @@ token_t *make_token() {
 
 char current_char = '\t';
 char next_char = '\t';
+char oldchar = '\t';
 
 token_t *get_next_token(FILE *f) {
     current_state = ST_INITIAL;
@@ -132,16 +133,20 @@ token_t *get_next_token(FILE *f) {
 	    return NULL;
         //next_char = getc(f);
 	entry_type_t cur_char_type = classify_entry(current_char);
-	
-	action_table[current_state][cur_char_type]();
-	if (current_state != ST_INITIAL &&
-	    next_state[current_state][cur_char_type] == -1) {
+	if (!(current_state == ST_SPECIALC && !strchr("<>=!", oldchar)))
+	   action_table[current_state][cur_char_type]();
+	if ((current_state != ST_INITIAL &&
+	    next_state[current_state][cur_char_type] == -1) || (current_state == ST_SPECIALC && !strchr("<>=!", oldchar))) {
 	    ungetc(current_char, f);
 	    column--;
 	    return make_token();
 	}
-	current_state = next_state[current_state][cur_char_type];
+    if((current_state == ST_SPECIALC && !strchr("<>=!", oldchar)))
+        current_state = -1;
+    else    
+	   current_state = next_state[current_state][cur_char_type];
         //printf("-%d-", current_state);
+    oldchar = current_char;
     }
 }
 

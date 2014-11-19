@@ -12,7 +12,7 @@ const char * const operators[] = {
     "+", "-", "*", "/",
     "(", ")",
     "==", "!=" "<", ">", "<=", ">=",
-    "&&", "||"
+    "&", "|"
 };
 size_t size_operators = (sizeof(operators) / sizeof(char*));
 
@@ -23,6 +23,10 @@ int operator_pos(char * str) {
 	    return i;
     }
     return -1; // not found
+}
+
+int accept_another_specialc(char * str){
+    
 }
 
 
