@@ -1,5 +1,4 @@
-programa = {tipo identificador "(" [declaracao_variavel {"," declaracao_variavel}] ")" {instrucao} "end" | 
-tipo identificador [ "[" expressao "]" ] ";"}. 
+programa = {tipo identificador "(" [declaracao_variavel {"," declaracao_variavel}] ")" {instrucao} "end" | tipo identificador [ "[" expressao "]" ] ";"}. 
 
 declaracao_variavel = tipo identificador [ "[" expressao "]" ].
 
@@ -10,8 +9,6 @@ laco = expressao "do" {instrucao} "end".
 condicional = expressao "then" {instrucao} ["else" {instrucao}] "end".
 
 retorno = expressao ";".
-
-tipo = "int" | "float" | "bool" | "char".
 
 expressao = termo_e ["|" expressao].
 
@@ -26,5 +23,3 @@ termo_aditivo = termo_multiplicativo ["+" termo_aditivo] | termo_multiplicativo 
 termo_multiplicativo = termo_primario ["*" termo_multiplicativo] | termo_primario ["/" termo_multiplicativo] | termo_primario ["mod" termo_multiplicativo].
 
 termo_primario = identificador | constante_numero | constante_caractere | constante_booleano | identificador "(" [{expressao ","} expressao] ")" | "(" expressao ")".
-
-imprimir = "print" expressao ";".

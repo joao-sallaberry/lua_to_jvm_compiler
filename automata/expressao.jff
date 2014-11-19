@@ -28,14 +28,14 @@
 			<read>expressao</read>
 		</transition>
 		<transition>
+			<from>1</from>
+			<to>2</to>
+			<read>"|"</read>
+		</transition>
+		<transition>
 			<from>0</from>
 			<to>1</to>
 			<read>termo_e</read>
-		</transition>
-		<transition>
-			<from>1</from>
-			<to>2</to>
-			<read>"||"</read>
 		</transition>
 	</automaton>
 </structure>
