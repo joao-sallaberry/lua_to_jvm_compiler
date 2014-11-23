@@ -10,7 +10,7 @@
 #define MAIN_FINAL_ST   6
 
 typedef enum{FSM_PROGRAMA,
-	     FSM_DELCARACAO_FUNCAO,
+	     FSM_DECLARACAO_FUNCAO,
 	     FSM_DECLARACAO_VARIAVEL,
 	     FSM_DECLARACAO_VAR_COM_ATRIB,
 	     FSM_INSTRUCAO,
@@ -90,21 +90,22 @@ token_t *get_token_cond(FILE * f) {
 // analyse syntax of entry
 int analyse(FILE * f) {
     token_t *t;
-
-   sub_machine = MAIN_MACHINE;
-   state = 0;
-
-    printf("--- syntax check ---\n");
-    while ((t = get_token_cond(f))) {
-	state = sub_machines[sub_machine](t);
-	if (state == -1) break;
-    }
-    printf("\n");
     
-    if (sub_machine == MAIN_MACHINE && state == MAIN_FINAL_ST)
-	return 0;
-    else
-	return -1;
+    sub_machine = MAIN_MACHINE;
+    state = 0;
+    
+    printf("--- syntax check ---\n");
+
+    // get token and make transition
+    while ((t = get_token_cond(f)) ||
+	   !(sub_machine == MAIN_MACHINE && state == MAIN_FINAL_ST)) {
+	state = sub_machines[sub_machine](t);
+	if (state == -1) return -1; //ERROR
+    }
+
+    printf("\n");
+
+    return 0;
 }
 
 // push current machine and return state to the stack
