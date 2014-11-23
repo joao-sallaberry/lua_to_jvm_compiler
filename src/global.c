@@ -25,10 +25,6 @@ int operator_pos(char * str) {
     return -1; // not found
 }
 
-int accept_another_specialc(char * str){
-    
-}
-
 
 /*** keywords ***/
 const char * const keywords[] = {

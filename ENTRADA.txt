@@ -1,11 +1,8 @@
 # if 1 then a = 2lalala 
 # # this is a comment
 # 2323 455 9090 lapis  azul < > 23.2 .5
-<<<<<<< HEAD
 
-#lapis = casa(5) && 4 ;
-print casa(5) && 4;
-=======
-int thales = funcao(5);
+
+int thales = funcao(5) <=5;
+
 #int pato;
->>>>>>> lexer
