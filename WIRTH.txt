@@ -1,66 +1,27 @@
-programa = {declaracao_funcao | declaracao_variavel ";"}.
+trecho = {comando [";"]} [("return" [listaexp] | "break") [";"]].
 
-declaracao_funcao = tipo identificador "(" parametros ")" {instrucao} "end".
+comando = ((Nome | ((Nome | "(" exp ")") {"[" exp "]" | "." Nome | args | ":" Nome args }) ("[" exp "]" | "." Nome)) {"," (Nome | ((Nome | "(" exp ")") {"[" exp "]" | "." Nome | args | ":" Nome args }) ("[" exp "]" | "." Nome))}) "=" listaexp | ((Nome | "(" exp ")") {"[" exp "]" | "." Nome | args | ":" Nome args }) (args | ":" Nome args) | "do" trecho "end" | "while" exp "do" trecho "end" | "repeat" trecho "until" exp | "if" exp "then" trecho {"elseif" exp "then" trecho} ["else" trecho] "end" | "for" Nome "=" exp "," exp ["," exp] "do" trecho "end" | "for" (Nome {"," Nome}) "in" listaexp "do" trecho "end" | "function" nomedafuncao corpodafuncao | "local" "function" Nome corpodafuncao | "local" (Nome {"," Nome}) ["=" listaexp].
 
-declaracao_variavel = tipo identificador [ "[" [ expressao ] "]" ].
+listavar = (Nome | ((Nome | "(" exp ")") {"[" exp "]" | "." Nome | args | ":" Nome args }) ("[" exp "]" | "." Nome)) {"," (Nome | ((Nome | "(" exp ")") {"[" exp "]" | "." Nome | args | ":" Nome args }) ("[" exp "]" | "." Nome))}.
 
-parametros = {declaracao_variavel ","} declaracao_variavel | ε.
+args = "(" [listaexp] ")" | ("{" [listadecampos] "}") | Cadeia.
 
-instrucao = declaracao_variavel ";" | retorno | laco | condicional | atribuicao | chamada_funcao ";".
+listadecampos = campo {separadordecampos campo} [separadordecampos].
 
-atribuicao = identificador [ "[" expressao "]" ] "=" expressao ";".
+campo = "[" exp "]" "=" exp | Nome "=" exp | exp.
 
-laco = "while" expressao "do" {instrucao} "end".
+separadordecampos = "," | ";".
 
-condicional = "if" expressao "then" {instrucao} condicional_negado.
+listaexp = {exp ","} exp.
 
-condicional_negado = ["else" {instrucao}] "end".
+exp = ("nil" | "false" | "true" | Numero | Cadeia | "..." | ("function" corpodafuncao) | ((Nome | "(" exp ")") {"[" exp "]" | "." Nome | args | ":" Nome args }) | ("{" [listadecampos] "}") | ("-" | "not" | "#") exp) {("+" | "-" | "*" | "/" | "^" | "%" | ".." | "<" | "<=" | ">" | ">=" | "==" | "~=" | "and" | "or") exp}.
 
-retorno = "ret" expressao";".
+nomedafuncao = Nome {"." Nome} [":" Nome].
 
-tipo = "int" | "float" | "bool" | "char".
+corpodafuncao = "(" [listapar] ")" trecho "end".
 
-identificador = letra | letra_digito.
+listapar = (Nome {"," Nome}) ["," "..."] | "...".
 
-expressao = termo_ou.
+opbin = "+" | "-" | "*" | "/" | "^" | "%" | ".." | "<" | "<=" | ">" | ">=" | "==" | "~=" | "and" | "or".
 
-termo_ou = termo_e ["|" termo_ou].
-
-termo_e = termo_igualdade ["&" termo_e].
-
-termo_igualdade = termo_relacional ["==" termo_igualdade] | termo_relacional ["!=" termo_igualdade].
-
-termo_relacional = termo_aditivo [">" termo_relacional] | termo_aditivo ["<" termo_relacional] | termo_aditivo [">=" termo_relacional] | termo_aditivo ["<=" termo_relacional].
-
-termo_aditivo = termo_multiplicativo ["+" termo_aditivo] | termo_multiplicativo ["-" termo_aditivo].
-
-termo_multiplicativo = termo_primario ["*" termo_multiplicativo] | termo_primario ["/" termo_multiplicativo] | termo_primario ["mod" termo_multiplicativo].
-
-termo_primario = identificador | constante | chamada_funcao | "("expressao")".
-
-chamada_funcao = identificador "(" argurmentos ")".
-
-argumentos = {expressao ","} expressao | ε.
-
-constante = constante_numero | constante_caractere | constante_booleano.
-
-constante_numero = inteiro | real.
-
-constante_caractere = "'" letra_digito "'".
-
-constante_booleano = "true" | "false".
-
-letra_digito = letra | digito.
-
-letra = 
-"a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k" | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" | "t" | "u" | "v" | "w" | "x" | "y" | "z" |
-"A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z".
-
-inteiro = digito {digito}.
-
-real = inteiro "." | inteiro "." inteiro | "." inteiro.
-
-digito = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9".
-
-comentario = "%" anything_but_breakline "\n".
 
