@@ -3,44 +3,35 @@
 	<automaton>
 		<!--The list of states.-->
 		<state id="0" name="q0">
-			<x>26.0</x>
-			<y>39.0</y>
+			<x>57.0</x>
+			<y>42.0</y>
 			<initial/>
 		</state>
 		<state id="1" name="q1">
-			<x>298.0</x>
-			<y>41.0</y>
+			<x>251.0</x>
+			<y>47.0</y>
 			<final/>
 		</state>
 		<state id="2" name="q2">
-			<x>21.0</x>
-			<y>227.0</y>
-		</state>
-		<state id="3" name="q3">
-			<x>261.0</x>
-			<y>227.0</y>
+			<x>49.0</x>
+			<y>165.0</y>
 			<final/>
 		</state>
 		<!--The list of transitions.-->
 		<transition>
-			<from>1</from>
-			<to>2</to>
-			<read>"!="</read>
+			<from>0</from>
+			<to>1</to>
+			<read>campo</read>
 		</transition>
 		<transition>
 			<from>1</from>
 			<to>2</to>
-			<read>"=="</read>
+			<read>separadordecampos</read>
 		</transition>
 		<transition>
 			<from>2</from>
-			<to>3</to>
-			<read>termo_igualdade</read>
-		</transition>
-		<transition>
-			<from>0</from>
 			<to>1</to>
-			<read>termo_relacional</read>
+			<read>campo</read>
 		</transition>
 	</automaton>
 </structure>

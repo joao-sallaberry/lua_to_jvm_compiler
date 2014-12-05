@@ -3,105 +3,100 @@
 	<automaton>
 		<!--The list of states.-->
 		<state id="0" name="q0">
-			<x>51.0</x>
-			<y>148.0</y>
+			<x>47.0</x>
+			<y>33.0</y>
 			<initial/>
 		</state>
 		<state id="1" name="q1">
-			<x>141.0</x>
-			<y>264.0</y>
+			<x>49.0</x>
+			<y>240.0</y>
 			<final/>
 		</state>
 		<state id="2" name="q2">
-			<x>491.0</x>
-			<y>149.0</y>
+			<x>214.0</x>
+			<y>42.0</y>
 			<final/>
 		</state>
 		<state id="3" name="q3">
-			<x>188.0</x>
-			<y>54.0</y>
+			<x>202.0</x>
+			<y>176.0</y>
+			<final/>
 		</state>
 		<state id="4" name="q4">
-			<x>368.0</x>
-			<y>265.0</y>
+			<x>370.0</x>
+			<y>232.0</y>
+			<final/>
 		</state>
 		<state id="5" name="q5">
-			<x>385.0</x>
-			<y>56.0</y>
-		</state>
-		<state id="6" name="q6">
-			<x>487.0</x>
-			<y>359.0</y>
-		</state>
-		<state id="7" name="q7">
-			<x>226.0</x>
-			<y>360.0</y>
+			<x>363.0</x>
+			<y>32.0</y>
+			<final/>
 		</state>
 		<!--The list of transitions.-->
 		<transition>
-			<from>5</from>
-			<to>2</to>
-			<read>")"</read>
-		</transition>
-		<transition>
-			<from>0</from>
-			<to>2</to>
-			<read>constante_booleano</read>
-		</transition>
-		<transition>
 			<from>1</from>
-			<to>4</to>
-			<read>"("</read>
+			<to>1</to>
+			<read>comando</read>
+		</transition>
+		<transition>
+			<from>4</from>
+			<to>2</to>
+			<read>"return"</read>
 		</transition>
 		<transition>
 			<from>0</from>
 			<to>3</to>
-			<read>"("</read>
+			<read>"break"</read>
 		</transition>
 		<transition>
-			<from>6</from>
-			<to>7</to>
-			<read>","</read>
+			<from>1</from>
+			<to>4</to>
+			<read>";"</read>
 		</transition>
 		<transition>
 			<from>4</from>
-			<to>6</to>
-			<read>expressao</read>
+			<to>1</to>
+			<read>comando</read>
 		</transition>
 		<transition>
-			<from>6</from>
+			<from>1</from>
 			<to>2</to>
-			<read>")"</read>
+			<read>"return"</read>
+		</transition>
+		<transition>
+			<from>2</from>
+			<to>3</to>
+			<read>listaexp</read>
+		</transition>
+		<transition>
+			<from>4</from>
+			<to>3</to>
+			<read>"break"</read>
 		</transition>
 		<transition>
 			<from>0</from>
 			<to>2</to>
-			<read>constante_caractere</read>
+			<read>"return"</read>
 		</transition>
 		<transition>
-			<from>3</from>
-			<to>5</to>
-			<read>expressao</read>
-		</transition>
-		<transition>
-			<from>0</from>
-			<to>2</to>
-			<read>constante_numero</read>
+			<from>1</from>
+			<to>3</to>
+			<read>"break"</read>
 		</transition>
 		<transition>
 			<from>0</from>
 			<to>1</to>
-			<read>identificador</read>
+			<read>comando</read>
 		</transition>
 		<transition>
-			<from>7</from>
-			<to>6</to>
-			<read>expressao</read>
+			<from>2</from>
+			<to>5</to>
+			<read>";"</read>
 		</transition>
 		<transition>
-			<from>4</from>
-			<to>2</to>
-			<read>")"</read>
+			<from>3</from>
+			<to>5</to>
+			<read>";"</read>
 		</transition>
 	</automaton>
 </structure>

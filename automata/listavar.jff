@@ -3,136 +3,137 @@
 	<automaton>
 		<!--The list of states.-->
 		<state id="0" name="q0">
-			<x>42.0</x>
-			<y>118.0</y>
+			<x>96.0</x>
+			<y>216.0</y>
 			<initial/>
 		</state>
 		<state id="1" name="q1">
-			<x>529.0</x>
-			<y>573.0</y>
-		</state>
-		<state id="2" name="q2">
-			<x>293.0</x>
-			<y>23.0</y>
-		</state>
-		<state id="3" name="q3">
-			<x>293.0</x>
-			<y>76.0</y>
-		</state>
-		<state id="4" name="q4">
-			<x>292.0</x>
-			<y>136.0</y>
-		</state>
-		<state id="5" name="q5">
-			<x>193.0</x>
-			<y>209.0</y>
-		</state>
-		<state id="6" name="q6">
-			<x>543.0</x>
-			<y>112.0</y>
+			<x>237.0</x>
+			<y>168.0</y>
 			<final/>
 		</state>
+		<state id="2" name="q2">
+			<x>44.0</x>
+			<y>127.0</y>
+		</state>
+		<state id="3" name="q3">
+			<x>421.0</x>
+			<y>57.0</y>
+		</state>
+		<state id="4" name="q4">
+			<x>102.0</x>
+			<y>81.0</y>
+		</state>
+		<state id="5" name="q5">
+			<x>255.0</x>
+			<y>21.0</y>
+		</state>
+		<state id="6" name="q6">
+			<x>321.0</x>
+			<y>206.0</y>
+		</state>
 		<state id="7" name="q7">
-			<x>439.0</x>
-			<y>149.0</y>
+			<x>32.0</x>
+			<y>27.0</y>
 		</state>
 		<state id="8" name="q8">
-			<x>394.0</x>
-			<y>195.0</y>
+			<x>488.0</x>
+			<y>124.0</y>
 		</state>
 		<state id="9" name="q9">
-			<x>243.0</x>
-			<y>245.0</y>
-		</state>
-		<state id="10" name="q10">
-			<x>402.0</x>
-			<y>305.0</y>
+			<x>521.0</x>
+			<y>193.0</y>
 		</state>
 		<!--The list of transitions.-->
 		<transition>
+			<from>5</from>
+			<to>6</to>
+			<read>":"</read>
+		</transition>
+		<transition>
 			<from>1</from>
 			<to>6</to>
-			<read>";"</read>
-		</transition>
-		<transition>
-			<from>5</from>
-			<to>8</to>
-			<read>"("</read>
-		</transition>
-		<transition>
-			<from>7</from>
-			<to>1</to>
-			<read>expressao</read>
+			<read>":"</read>
 		</transition>
 		<transition>
 			<from>8</from>
-			<to>9</to>
-			<read>expressao</read>
-		</transition>
-		<transition>
-			<from>5</from>
-			<to>7</to>
-			<read>"="</read>
-		</transition>
-		<transition>
-			<from>9</from>
-			<to>10</to>
-			<read>","</read>
+			<to>1</to>
+			<read>"]"</read>
 		</transition>
 		<transition>
 			<from>0</from>
-			<to>3</to>
-			<read>"while"</read>
-		</transition>
-		<transition>
-			<from>8</from>
 			<to>1</to>
-			<read>")"</read>
+			<read>Nome</read>
 		</transition>
 		<transition>
-			<from>2</from>
-			<to>6</to>
-			<read>retorno</read>
+			<from>5</from>
+			<to>5</to>
+			<read>args</read>
+		</transition>
+		<transition>
+			<from>1</from>
+			<to>5</to>
+			<read>args</read>
 		</transition>
 		<transition>
 			<from>4</from>
-			<to>6</to>
-			<read>condicional</read>
-		</transition>
-		<transition>
-			<from>0</from>
-			<to>5</to>
-			<read>identificador</read>
-		</transition>
-		<transition>
-			<from>9</from>
 			<to>1</to>
-			<read>")"</read>
+			<read>Nome</read>
+		</transition>
+		<transition>
+			<from>6</from>
+			<to>9</to>
+			<read>Nome</read>
+		</transition>
+		<transition>
+			<from>2</from>
+			<to>7</to>
+			<read>exp</read>
 		</transition>
 		<transition>
 			<from>3</from>
-			<to>6</to>
-			<read>laco</read>
+			<to>8</to>
+			<read>exp</read>
+		</transition>
+		<transition>
+			<from>7</from>
+			<to>5</to>
+			<read>")"</read>
+		</transition>
+		<transition>
+			<from>5</from>
+			<to>3</to>
+			<read>"["</read>
 		</transition>
 		<transition>
 			<from>0</from>
 			<to>2</to>
-			<read>"ret"</read>
+			<read>"("</read>
 		</transition>
 		<transition>
-			<from>10</from>
-			<to>9</to>
-			<read>expressao</read>
+			<from>1</from>
+			<to>3</to>
+			<read>"["</read>
 		</transition>
 		<transition>
-			<from>0</from>
-			<to>1</to>
-			<read>declaracao_variavel</read>
+			<from>1</from>
+			<to>0</to>
+			<read>","</read>
 		</transition>
 		<transition>
-			<from>0</from>
+			<from>9</from>
+			<to>5</to>
+			<read>args</read>
+		</transition>
+		<transition>
+			<from>5</from>
 			<to>4</to>
-			<read>"if"</read>
+			<read>"."</read>
+		</transition>
+		<transition>
+			<from>1</from>
+			<to>4</to>
+			<read>"."</read>
 		</transition>
 	</automaton>
 </structure>
