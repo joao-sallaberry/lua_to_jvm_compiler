@@ -7,18 +7,17 @@
 
 
 // define states
-typedef enum {ST_INITIAL, ST_COMMENT, ST_NUMBER, ST_FLOAT, ST_ALPHANUM, ST_SPECIALC, ST_COMPARE, NUM_STATES} state_t;
-typedef enum {EN_DIGIT, EN_ALPHA, EN_DOT, EN_SPECIALC, EN_COMPARE, EN_EQUAL, EN_HASHTAG, EN_NEWLINE, EN_SPACE, NUM_ENTRIES} entry_type_t;
+typedef enum {ST_INITIAL, ST_COMMENT, ST_NUMBER, ST_FLOAT, ST_ALPHANUM, ST_SPECIALC, ST_MINUS, NUM_STATES} state_t;
+typedef enum {EN_DIGIT, EN_ALPHA, EN_DOT, EN_SPECIALC, EN_MINUS, EN_NEWLINE, EN_SPACE, NUM_ENTRIES} entry_type_t;
 
 state_t const next_state[][NUM_ENTRIES] = {
-// receive        digit         alpha         dot           specialc     compare     '='         hashtag      newline      space 
-/* INITIAL */    {ST_NUMBER,   ST_ALPHANUM,   ST_FLOAT,     ST_SPECIALC, ST_COMPARE, ST_COMPARE, ST_COMMENT,  ST_INITIAL,  ST_INITIAL},
-/* COMMENT */    {ST_COMMENT,  ST_COMMENT,    ST_COMMENT,   ST_COMMENT,  ST_COMMENT, ST_COMMENT, ST_COMMENT,  ST_INITIAL,  ST_COMMENT},
-/* NUMBER */     {ST_NUMBER,   -1,            ST_FLOAT,     -1,          -1,         -1,         -1,          -1,          -1},
-/* FLOAT */      {ST_FLOAT,    -1,            -1,           -1,          -1,         -1,         -1,          -1,          -1},
-/* ALPHANUM */   {ST_ALPHANUM, ST_ALPHANUM,   -1,           -1,          -1,         -1,         -1,          -1,          -1},
-/* SPECIALC */   {-1,          -1,            -1,           -1,          -1,         -1,         -1,          -1,          -1},
-/* COMPARE */    {-1,          -1,            -1,           -1,          -1,         ST_COMPARE, -1,          -1,          -1} 
+	{ ST_NUMBER ,  ST_ALPHANUM ,  ST_FLOAT ,  ST_SPECIALC ,  ST_MINUS ,  ST_INITIAL ,  ST_INITIAL },
+	{ ST_COMMENT ,  ST_COMMENT ,  ST_COMMENT ,  ST_COMMENT ,  ST_COMMENT ,  ST_INITIAL ,  ST_COMMENT },
+	{ ST_NUMBER ,  -1 ,  ST_FLOAT ,  -1 ,  -1 ,  -1 ,  -1 },
+	{ ST_FLOAT ,  -1 ,  -1 ,  -1 ,  -1 ,  -1 ,  -1 },
+	{ ST_ALPHANUM ,  ST_ALPHANUM ,  -1 ,  -1 ,  -1 ,  -1 ,  -1 },
+	{ -1 ,  -1 ,  -1 ,  -1 ,  -1 ,  -1 ,  -1 },
+	{ -1 ,  -1 ,  -1 ,  -1 ,  ST_COMMENT ,  -1 ,  -1 }
 };
 
 // declare state actions
@@ -33,18 +32,17 @@ void do_float_digit();
 void do_alphanum_digit();
 void do_alphanum_alpha();
 void do_compare_equal();
+void do_minus();
 
 void (*const action_table [NUM_STATES][NUM_ENTRIES]) (void) = {
-//                digit              alpha              dot             specialc             compare              '='                  hashtag      newline      space
-/* INITIAL */    {do_initial_digit,  do_initial_alpha,  do_initial_dot, do_initial_specialc, do_initial_specialc, do_initial_specialc, do_nothing,  do_nothing,  do_nothing},
-/* COMMENT */    {do_nothing,        do_nothing,        do_nothing,     do_nothing,          do_nothing,          do_nothing,          do_nothing,  do_nothing,  do_nothing},
-/* NUMBER */     {do_number_digit,   do_nothing,        do_number_dot,  do_nothing,          do_nothing,          do_nothing,          do_nothing,  do_nothing,  do_nothing},
-/* FLOAT */      {do_float_digit,    do_nothing,        do_nothing,     do_nothing,          do_nothing,          do_nothing,          do_nothing,  do_nothing,  do_nothing},
-/* ALPHANUM */   {do_alphanum_digit, do_alphanum_alpha, do_nothing,     do_nothing,          do_nothing,          do_nothing,          do_nothing,  do_nothing,  do_nothing},
-/* SPECIALC */   {do_nothing,        do_nothing,        do_nothing,     do_nothing,          do_nothing,          do_nothing,          do_nothing,  do_nothing,  do_nothing},
-/* COMPARE */    {do_nothing,        do_nothing,        do_nothing,     do_nothing,          do_nothing,          do_compare_equal,    do_nothing,  do_nothing,  do_nothing}
+    { do_initial_digit ,  do_initial_alpha ,  do_initial_dot ,  do_initial_specialc ,  do_nothing ,  do_nothing ,  do_nothing },
+    { do_nothing ,  do_nothing ,  do_nothing ,  do_nothing ,  do_nothing ,  do_nothing ,  do_nothing },
+    { do_number_digit ,  do_nothing ,  do_number_dot ,  do_nothing ,  do_nothing ,  do_nothing ,  do_nothing },
+    { do_float_digit ,  do_nothing ,  do_nothing ,  do_nothing ,  do_nothing ,  do_nothing ,  do_nothing },
+    { do_alphanum_digit ,  do_alphanum_alpha ,  do_nothing ,  do_nothing ,  do_nothing ,  do_nothing ,  do_nothing },
+    { do_nothing ,  do_nothing ,  do_nothing ,  do_nothing ,  do_nothing ,  do_nothing ,  do_nothing },
+    { do_minus ,  do_minus ,  do_minus ,  do_minus ,  do_nothing ,  do_minus ,  do_minus }
 };
-
 
 // auxiliar functions
 int is_digit(char c) {
@@ -54,10 +52,7 @@ int is_alpha(char c) {
     return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
 }
 char * is_specialc(char c) {
-    return strchr(",;'+-*/()[]&|", c);
-}
-char * is_compare(char c) {
-    return strchr("<>!", c);
+    return strchr("=;,.:\"+-*/^%()[]{}~<>", c);
 }
 
 unsigned int line = 1, column = 0;
@@ -72,14 +67,10 @@ entry_type_t classify_entry(char c) {
 	return EN_ALPHA;
     else if (is_specialc(c))
 	return EN_SPECIALC;
-    else if (is_compare(c))
-	return EN_COMPARE;
-    else if (c == '=')
-	return EN_EQUAL;
     else if (c == '.')
 	return EN_DOT;
-    else if (c == '#')
-	return EN_HASHTAG;
+    else if (c == '-')
+	return EN_MINUS;
     else if (c == '\n') {
 	line++;
 	column = 0;
@@ -114,7 +105,7 @@ token_t *make_token() {
 	t = add_alphanum_token(buffer);
 	break;
     case ST_SPECIALC:
-    case ST_COMPARE:
+    case ST_MINUS:
 	t = add_operator_token(buffer);
 	break;
     default:
@@ -211,7 +202,9 @@ void do_alphanum_alpha() {
     buffer[buffer_pt++] = current_char;
 }
 
-void do_compare_equal() {
-    buffer[buffer_pt++] = current_char;
-    buffer[buffer_pt] = 0;
+void do_minus() {
+    buffer[0] = '-';
+    buffer[1] = 0;
+    buffer_pt = 1;
+    save_position();
 }

@@ -8,11 +8,10 @@
 
 /*** operators ***/
 const char * const operators[] = {
-    "=", ";", ",", "'",
-    "+", "-", "*", "/",
-    "(", ")", "[", "]",
-    "==", "!=" "<", ">", "<=", ">=",
-    "&", "|"
+    "=", ";", ",", "\"",
+    "+", "-", "*", "/", "^", "%", "..",
+    "(", ")", "[", "]", "{", "}", ".", ":", "...",
+    "==", "~=" "<", ">", "<=", ">="
 };
 size_t size_operators = (sizeof(operators) / sizeof(char*));
 
@@ -28,11 +27,10 @@ int operator_pos(char * str) {
 
 /*** keywords ***/
 const char * const keywords[] = {
-    "if", "else", "while", "then", "do", "end", "ret",
-    "int", "float", "bool", "char",
-    "mod",
-    "true", "false",
-    "print"
+    "if", "else", "elseif", "while", "repeat", "until", "for", "in", "then", "do", "end", 
+    "function", "return", "local", "break",
+    "and", "or", "not",
+    "true", "false"
 };
 size_t size_keywords = (sizeof(keywords) / sizeof(char*));
 

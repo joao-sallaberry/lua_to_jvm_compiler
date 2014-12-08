@@ -93,7 +93,7 @@ int analyse(FILE * f) {
     // get token and make transition
     while ((t = get_token_cond(f)) ||
 	   !(sub_machine == MAIN_MACHINE && state == MAIN_FINAL_ST)) {
-	state = sub_machines[sub_machine](t);
+	//	state = sub_machines[sub_machine](t);
 	if (state == -1) return -1; //ERROR
     }
 
