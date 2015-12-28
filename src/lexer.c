@@ -65,12 +65,12 @@ entry_type_t classify_entry(char c) {
 	return EN_DIGIT;
     else if (is_alpha(c))
 	return EN_ALPHA;
-    else if (is_specialc(c))
-	return EN_SPECIALC;
     else if (c == '.')
 	return EN_DOT;
     else if (c == '-')
 	return EN_MINUS;
+    else if (is_specialc(c))
+	return EN_SPECIALC;
     else if (c == '\n') {
 	line++;
 	column = 0;

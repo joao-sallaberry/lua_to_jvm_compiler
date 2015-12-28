@@ -1,3 +1,5 @@
+-- this is a comment
+
 local function factorial(n)
     local fact = 1;
 
